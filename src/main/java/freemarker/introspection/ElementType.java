@@ -23,7 +23,7 @@ public enum ElementType {
     MACRO, // name, argNames, map
     MIXED_CONTENT,
     NO_ESCAPE_BLOCK,
-    NUMERIC_OUTPUT, // expr, min/maxFracDigits
+    NUMERICAL_OUTPUT, // expr, min/maxFracDigits
     PROPERTY_SETTING, // name, expr
     RECOVERY_BLOCK,
     RECURSE_NODE, // expr, expr

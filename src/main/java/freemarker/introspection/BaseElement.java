@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang3.reflect.FieldUtils;
+
+import freemarker.core.Expression;
 import freemarker.core.TemplateElement;
 
 public class BaseElement implements Element {
@@ -27,6 +30,25 @@ public class BaseElement implements Element {
             }
             return elements;
         }
+    }
+
+    public List<Expr> getParams() {
+        List<String> props = info.getExprProps();
+        if (props.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<Expr> params = new ArrayList<Expr>();
+        for (String prop : props) {
+            Expression e;
+            try {
+                e = (Expression) FieldUtils.readDeclaredField(node, prop, true);
+            } catch (IllegalAccessException iae) {
+                throw new RuntimeException("Could not access field " + prop, iae);
+            }
+            params.add(IntrospectionClassFactory.getIntrospectionExpr(e));
+        }
+        return params;
     }
 
     public ElementType getType() {

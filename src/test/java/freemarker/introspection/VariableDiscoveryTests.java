@@ -1,5 +1,6 @@
 package freemarker.introspection;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
@@ -23,6 +24,15 @@ public class VariableDiscoveryTests {
     @Test
     public void testFindVariables() {
         Element root = TemplateIntrospector.getRootNode(template);
+        for (Element child : root.getChildren()) {
+            if (child.getType() == ElementType.IFBLOCK) {
+                for (Element condBlk : child.getChildren()) {
+                    assertEquals(1, condBlk.getParams().size());
+                    Expr expr = condBlk.getParams().get(0);
+                    assertNotNull(expr);
+                }
+            }
+        }
         assertNotNull(root);
     }
 

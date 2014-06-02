@@ -2,20 +2,16 @@ package freemarker.introspection;
 
 import java.util.List;
 
-public interface Element {
-    ElementType getType();
-
-    List<Element> getChildren();
+public interface Expr {
+    ExprType getType();
 
     List<Expr> getParams();
 
-    String getDescription();
-
     int getBeginColumn();
 
-    int getEndColumn();
-
     int getBeginLine();
+
+    int getEndColumn();
 
     int getEndLine();
 }
