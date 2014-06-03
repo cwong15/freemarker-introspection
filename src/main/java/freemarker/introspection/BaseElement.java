@@ -4,23 +4,28 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.lang3.reflect.FieldUtils;
-
-import freemarker.core.Expression;
 import freemarker.core.TemplateElement;
 
 public class BaseElement implements Element {
     private TemplateElement node;
-    private ElementInfo info;
+    private ElementType type;
 
-    public BaseElement(ElementInfo info, TemplateElement node) {
-        this.info = info;
+    // populated lazily as needed
+    private List<Element> children = null;
+    private List<Expr> params = null;
+
+    public BaseElement(ElementType type, TemplateElement node) {
+        this.type = type;
         this.node = node;
     }
 
     public List<Element> getChildren() {
+        if (children != null) {
+            return children;
+        }
+
         if (node.isLeaf()) {
-            return Collections.emptyList();
+            children = Collections.emptyList();
         } else {
             int numChildren = node.getChildCount();
             List<Element> elements = new ArrayList<Element>(numChildren);
@@ -28,31 +33,21 @@ public class BaseElement implements Element {
                 elements.add(IntrospectionClassFactory.getIntrospectionElement(
                         (TemplateElement) node.getChildAt(i)));
             }
-            return elements;
+            children = Collections.unmodifiableList(elements);
         }
+
+        return children;
     }
 
     public List<Expr> getParams() {
-        List<String> props = info.getExprProps();
-        if (props.isEmpty()) {
-            return Collections.emptyList();
-        }
-
-        List<Expr> params = new ArrayList<Expr>();
-        for (String prop : props) {
-            Expression e;
-            try {
-                e = (Expression) FieldUtils.readDeclaredField(node, prop, true);
-            } catch (IllegalAccessException iae) {
-                throw new RuntimeException("Could not access field " + prop, iae);
-            }
-            params.add(IntrospectionClassFactory.getIntrospectionExpr(e));
+        if (params == null) {
+            params = IntrospectionClassFactory.getParams(node, type.getParamProps());
         }
         return params;
     }
 
     public ElementType getType() {
-        return info.getType();
+        return type;
     }
 
     public String getDescription() {

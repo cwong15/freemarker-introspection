@@ -1,16 +1,15 @@
 package freemarker.introspection;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-
-import org.apache.commons.lang3.reflect.FieldUtils;
 
 import freemarker.core.Expression;
 
 class BaseExpr implements Expr {
     private ExprType type;
     private Expression expr;
+
+    // populated lazily as needed
+    private List<Expr> params = null;
 
     BaseExpr(ExprType type, Expression expr) {
         this.type = type;
@@ -22,20 +21,8 @@ class BaseExpr implements Expr {
     }
 
     public List<Expr> getParams() {
-        List<String> props = type.getSubExprProps();
-        if (props.isEmpty()) {
-            return Collections.emptyList();
-        }
-
-        List<Expr> params = new ArrayList<Expr>();
-        for (String prop : props) {
-            Expression e;
-            try {
-                e = (Expression) FieldUtils.readDeclaredField(expr, prop, true);
-            } catch (IllegalAccessException iae) {
-                throw new RuntimeException("Could not access field " + prop, iae);
-            }
-            params.add(IntrospectionClassFactory.getIntrospectionExpr(e));
+        if (params == null) {
+            params = IntrospectionClassFactory.getParams(expr, type.getSubExprProps());
         }
         return params;
     }

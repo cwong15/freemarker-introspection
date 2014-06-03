@@ -1,40 +1,59 @@
 package freemarker.introspection;
 
-public enum ElementType {
-    ASSIGNMENT, // name, expr
-    ASSIGNMENT_INSTRUCTION, // expr
-    ATTEMPT_BLOCK,
-    BLOCK_ASSIGNMENT, // name, expr, scope
-    BODY_INSTRUCTION, // list of expr
-    BREAK_INSTRUCTION,
-    CASE, // expr, isDefault (bool)
-    COMMENT, // text
-    COMPRESSED_BLOCK,
-    CONDITIONAL_BLOCK, // expr, isFirst, isSimple
-    DEBUG_BREAK,
-    DOLLAR_VARIABLE, // expr
-    ESCAPE_BLOCK, // name, expr
-    FALLBACK_INSTRUCTION,
-    FLUSH_INSTRUCTION,
-    IFBLOCK,
-    INCLUDE, // expr(s), encoding, parse
-    ITERATOR_BLOCK, // expr, name, isForeach
-    LIBRARY_LOAD, // expr, namespace, path
-    MACRO, // name, argNames, map
-    MIXED_CONTENT,
-    NO_ESCAPE_BLOCK,
-    NUMERICAL_OUTPUT, // expr, min/maxFracDigits
-    PROPERTY_SETTING, // name, expr
-    RECOVERY_BLOCK,
-    RECURSE_NODE, // expr, expr
-    RETURN_INSTRUCTION, // expr
-    STOP_INSTRUCTION,
-    SWITCH_BLOCK, // expr
-    TEXT_BLOCK, // text, unparsed (bool)
-    TRANSFORM_BLOCK, // expr, map
-    TRIM_INSTRUCTION, // left/right (bools)
-    UNIFIED_CALL, // expr, map, args (lists)
-    VISIT_NODE, // expr, expr
+import java.util.Arrays;
+import java.util.List;
 
-    GENERIC
+public enum ElementType {
+    ASSIGNMENT("Assignment", "variableName", "value", "scope", "namespaceExp"),
+    ASSIGNMENT_INSTRUCTION("AssignmentInstruction", "scope", "namespaceExp"),
+    ATTEMPT_BLOCK("AttemptBlock"),
+    BLOCK_ASSIGNMENT("BlockAssignment", "varName", "scope", "namespaceExp"),
+    BODY_INSTRUCTION("BodyInstruction"),
+    BREAK_INSTRUCTION("BreakInstruction"),
+    CASE("Case", "condition", "isDefault"),
+    COMMENT("Comment", "text"),
+    COMPRESSED_BLOCK("CompressedBlock"),
+    CONDITIONAL_BLOCK("ConditionalBlock", "condition", "type"),
+    DEBUG_BREAK("DebugBreak"),
+    DOLLAR_VARIABLE("DollarVariable", "expression"),
+    ESCAPE_BLOCK("EscapeBlock", "variable", "expr"),
+    FALLBACK_INSTRUCTION("FallbackInstruction"),
+    FLUSH_INSTRUCTION("FlushInstruction"),
+    IFBLOCK("IfBlock"),
+    INCLUDE("Include", "templateName", "parse", "encoding"),
+    ITERATOR_BLOCK("IteratorBlock", "listSource", "loopVariableName"),
+    LIBRARY_LOAD("LibraryLoad", "templateName", "namespace"),
+    MACRO("Macro", "name", "paramNames"),
+    MIXED_CONTENT("MixedContent"),
+    NO_ESCAPE_BLOCK("NoEscapeBlock"),
+    NUMERICAL_OUTPUT("NumericalOutput", "expression", "minFracDigits", "maxFracDigits"),
+    PROPERTY_SETTING("PropertySetting", "key", "value"),
+    RECOVERY_BLOCK("RecoveryBlock"),
+    RECURSE_NODE("RecurseNode", "targetNode", "namespaces"),
+    RETURN_INSTRUCTION("ReturnInstruction", "exp"),
+    STOP_INSTRUCTION("StopInstruction", "exp"),
+    SWITCH_BLOCK("SwitchBlock", "searched"),
+    TEXT_BLOCK("TextBlock", "text"),
+    TRANSFORM_BLOCK("TransformBlock", "transformExpression"),
+    TRIM_INSTRUCTION("TrimInstruction"),
+    UNIFIED_CALL("UnifiedCall", "nameExp"),
+    VISIT_NODE("VisitNode", "targetNode", "namespaces"),
+
+    GENERIC("");
+
+    private String className;
+    private List<String> paramProps;
+
+    private ElementType(String className, String... paramProps) {
+        this.className = className;
+        this.paramProps = Arrays.asList(paramProps);
+    }
+
+    String getClassName() {
+        return this.className;
+    }
+
+    List<String> getParamProps() {
+        return this.paramProps;
+    }
 }
