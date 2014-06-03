@@ -1,8 +1,11 @@
 package freemarker.introspection;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -22,15 +25,11 @@ public class VariableDiscoveryTests {
 
     @Test
     public void testFindVariables() {
-        Element root = TemplateIntrospector.getRootNode(template);
-        for (Element child : root.getChildren()) {
-            if (child.getType() == ElementType.IFBLOCK) {
-                for (Element condBlk : child.getChildren()) {
-                    Object expr = condBlk.getParams().get(0);
-                }
-            }
-        }
-        assertNotNull(root);
-    }
+        Set<String> expectedVariables = new LinkedHashSet<String>(
+                Arrays.asList("foo", "bar", "thing", "this.thing"));
 
+        Element root = TemplateIntrospector.getRootNode(template);
+        Set<String> variables = new VariableFinder(root).seek().getVariables();
+        assertEquals(expectedVariables, variables);
+    }
 }

@@ -42,4 +42,12 @@ class BaseExpr implements Expr {
     public int getEndLine() {
         return expr.getEndLine();
     }
+
+    public void accept(ExprVisitor visitor) {
+        visitor.visit(this);
+    }
+
+    public String toString() {
+        return expr.toString();
+    }
 }

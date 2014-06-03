@@ -14,4 +14,6 @@ public interface Expr {
     int getEndColumn();
 
     int getEndLine();
+
+    void accept(ExprVisitor visitor);
 }

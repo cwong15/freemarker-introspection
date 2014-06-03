@@ -43,4 +43,8 @@ class ObjectExpr implements Expr {
     public int getEndLine() {
         return parentNode.getEndLine();
     }
+
+    public void accept(ExprVisitor visitor) {
+        visitor.visit(this);
+    }
 }

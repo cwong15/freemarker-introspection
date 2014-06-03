@@ -18,4 +18,6 @@ public interface Element {
     int getBeginLine();
 
     int getEndLine();
+
+    void accept(ElementVisitor visitor);
 }

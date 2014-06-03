@@ -69,4 +69,11 @@ public class BaseElement implements Element {
     public int getEndLine() {
         return node.getEndLine();
     }
+
+    public void accept(ElementVisitor visitor) {
+        visitor.visit(this);
+        for (Element e : getChildren()) {
+            e.accept(visitor);
+        }
+    }
 }
