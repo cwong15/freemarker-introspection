@@ -3,6 +3,19 @@ package freemarker.introspection;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+/**
+ * This class provides the ability to scan a Freemarker template for variables
+ * used. This helps you to figure out what variables it will request from the
+ * model during processing.  
+ * 
+ * <p>Sample usage:
+ * <pre>
+ * Set&lt;String&gt; vars = new VariableFinder(root).seek().getVariables();
+ * </pre>
+ * 
+ * <p>This class also serves as an example of how to traverse the template tree
+ * using the visitor pattern.
+ */
 public class VariableFinder implements ElementVisitor, ExprVisitor {
     private Element root;
     private Set<String> variables;

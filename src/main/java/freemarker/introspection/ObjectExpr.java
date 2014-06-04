@@ -5,7 +5,7 @@ import java.util.List;
 
 import freemarker.core.TemplateObject;
 
-class ObjectExpr implements Expr {
+class ObjectExpr implements ValueExpr {
     private ExprType type;
     private TemplateObject parentNode;
     private Object value;

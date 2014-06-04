@@ -21,4 +21,9 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.+'
 }
 
-
+javadoc {
+    source = fileTree('src/main/java/freemarker/introspection').include([
+        'Element.java', 'ElementType.java', 'Expr.java', 'ExprType.java',
+        'ElementVisitor.java', 'ExprVisitor.java', 'TemplateIntrospector.java',
+        'ValueExpr.java', 'VariableFinder.java'])
+}
