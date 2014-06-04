@@ -17,5 +17,7 @@ Building quick start:
 You must have Gradle installed to build this project.
 
 To build the library: "gradle jar"
+
 To build the Javadoc of the public interfaces: "gradle javadoc"
+
 To generate the Eclipse project: "gradle eclipse"
