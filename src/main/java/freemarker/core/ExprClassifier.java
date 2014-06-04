@@ -1,21 +1,25 @@
-package freemarker.introspection;
+package freemarker.core;
 
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 
-import freemarker.core.Expression;
+import freemarker.introspection.ExprType;
 
-class ExprClassifier {
+public class ExprClassifier {
     private static Map<String, ExprType> exprMap = null;
 
-    static ExprType getType(Expression exprObj) {
+    public static ExprType getType(Expression exprObj) {
         if (exprMap == null) {
             buildMap();
         }
-        ExprType type = exprMap.get(exprObj.getClass().getSimpleName());
-        type = type == null ? ExprType.GENERIC : type;
-        return type;
+        if (exprObj instanceof BuiltIn) {
+            return ExprType.BUILTIN;
+        } else {
+            ExprType type = exprMap.get(exprObj.getClass().getSimpleName());
+            type = type == null ? ExprType.GENERIC : type;
+            return type;
+        }
     }
 
     private static void buildMap() {

@@ -22,8 +22,8 @@ public enum ExprType {
     /** Boolean literal. Parameter: value */
     BOOLEAN_LITERAL("BooleanLiteral", "val"),
 
-    /** Builtin. */
-    BUILTIN("BuiltIn"),
+    /** Builtin. Parameters: target, key */
+    BUILTIN("BuiltIn", "target", "key"),
 
     /** Builtin variable. */
     BUILTIN_VARIABLE("BuiltinVariable"),
@@ -93,7 +93,7 @@ public enum ExprType {
         this.subExprProps = Arrays.asList(exprProps);
     }
 
-    String getClassName() {
+    public String getClassName() {
         return this.className;
     }
 

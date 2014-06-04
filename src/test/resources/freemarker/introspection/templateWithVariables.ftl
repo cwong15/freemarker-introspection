@@ -8,5 +8,5 @@
     everything else here
 [/#if]
 
-Example of simple variable reference: ${thing}
-Example of dot variable reference: ${this.thing}            
+Example of simple variable reference: ${thing?upper_case?trim}
+Example of dot variable reference: ${this.thing?upper_case!'default_txt'}            

@@ -47,4 +47,8 @@ class ObjectExpr implements ValueExpr {
     public void accept(ExprVisitor visitor) {
         visitor.visit(this);
     }
+
+    public String toString() {
+        return value.toString();
+    }
 }

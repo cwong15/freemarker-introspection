@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.reflect.FieldUtils;
 
+import freemarker.core.ExprClassifier;
 import freemarker.core.Expression;
 import freemarker.core.TemplateElement;
 import freemarker.core.TemplateObject;
@@ -24,7 +25,7 @@ class IntrospectionClassFactory {
         for (String prop : props) {
             Object p;
             try {
-                p = (Object) FieldUtils.readDeclaredField(obj, prop, true);
+                p = (Object) FieldUtils.readField(obj, prop, true);
             } catch (IllegalAccessException iae) {
                 throw new RuntimeException("Could not access field " + prop, iae);
             }
