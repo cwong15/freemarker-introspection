@@ -6,7 +6,7 @@ import java.util.List;
  * Represents a Freemarker expression. A primitive or scalar (string, int etc)
  * will get wrapped into an Expr of type VALUE.  
  */
-public interface Expr {
+public interface Expr extends TemplateNode {
     /** The type of this expression */
     ExprType getType();
 
@@ -15,18 +15,6 @@ public interface Expr {
      * parameters depends on the type of the expression.
      */
     List<Expr> getParams();
-
-    /** The start column location of this expression in the template */
-    int getBeginColumn();
-
-    /** The start line location of this expression in the template */
-    int getBeginLine();
-
-    /** The end column location of this expression in the template */
-    int getEndColumn();
-
-    /** The end line location of this element in the template */
-    int getEndLine();
 
     /**
      * Visits this element. The visit() method of the visitor is called on this

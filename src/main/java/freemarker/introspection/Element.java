@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * Represents a Freemarker element
  */
-public interface Element {
+public interface Element extends TemplateNode {
     /** The type of this element */
     ElementType getType();
 
@@ -20,18 +20,6 @@ public interface Element {
 
     /** Returns a human-readable description of this element */
     String getDescription();
-
-    /** The start column location of this element in the template */
-    int getBeginColumn();
-
-    /** The end column location of this element in the template */
-    int getEndColumn();
-
-    /** The start line location of this element in the template */
-    int getBeginLine();
-
-    /** The end line location of this element in the template */
-    int getEndLine();
 
     /**
      * Visits this element. The visit() method of the visitor is called on this

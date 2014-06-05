@@ -8,5 +8,7 @@
     everything else here
 [/#if]
 
+[#include "includedContent.html"]
+
 Example of simple variable reference: ${thing?upper_case?trim}
-Example of dot variable reference: ${this.thing?upper_case!'default_txt'}            
+Example of dot variable reference: ${this.thing?lower_case!'default_txt'}            

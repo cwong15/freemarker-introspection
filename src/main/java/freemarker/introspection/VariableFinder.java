@@ -10,6 +10,7 @@ import java.util.Set;
  * 
  * <p>Sample usage:
  * <pre>
+ * Element root = TemplateIntrospector.getRootNode(template);
  * Set&lt;String&gt; vars = new VariableFinder(root).seek().getVariables();
  * </pre>
  * 
@@ -25,11 +26,20 @@ public class VariableFinder implements ElementVisitor, ExprVisitor {
         variables = new LinkedHashSet<String>();
     }
 
+    /**
+     * Scan the tree for variables. This should only be called once. 
+     */
     public VariableFinder seek() {
         root.accept(this);
         return this;
     }
 
+    /**
+     * Returns the variables found with seek(). You must seek() first before
+     * getting meaningful results from this method. 
+     *  
+     * @return set of variable names. 
+     */
     public Set<String> getVariables() {
         return variables;
     }
@@ -38,7 +48,7 @@ public class VariableFinder implements ElementVisitor, ExprVisitor {
         switch (element.getType()) {
             case ASSIGNMENT:
             case BLOCK_ASSIGNMENT:
-                // TODO: allow local variable scraping. For now, ignore local vars.
+                // TODO: handle local variables properly. For now, ignore them.
                 break;
             case INCLUDE:
                 // TODO: optionally chase includes
