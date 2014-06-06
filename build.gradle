@@ -25,6 +25,7 @@ dependencies {
 javadoc {
     source = fileTree('src/main/java/freemarker/introspection').include([
         'Element.java', 'ElementType.java', 'Expr.java', 'ExprType.java',
-        'ElementVisitor.java', 'ExprVisitor.java', 'TemplateIntrospector.java',
+        'ElementVisitor.java', 'ExprVisitor.java', 'TemplateEditor.java',
+        'TemplateIntrospector.java', 'TemplateNode.java', 
         'ValueExpr.java', 'VariableFinder.java'])
 }
