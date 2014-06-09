@@ -36,7 +36,7 @@ public enum ElementType {
      * A case in a switch statement. Parameters: condition (may be null),
      * default.
      */
-    CASE("Case", "condition", "isDefault"),
+    CASE("Case", "condition"),
 
     /**
      * Comment. Parameter: text. 
