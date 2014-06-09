@@ -41,7 +41,8 @@ public class BaseElement implements Element {
 
     public List<Expr> getParams() {
         if (params == null) {
-            params = IntrospectionClassFactory.getParams(node, type.getParamProps());
+            params = IntrospectionClassFactory.getParams(node,
+                    type.getParamFields(), type.getAltParamFields());
         }
         return params;
     }

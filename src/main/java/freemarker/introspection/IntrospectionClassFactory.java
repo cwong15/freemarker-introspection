@@ -16,18 +16,39 @@ class IntrospectionClassFactory {
         return new BaseElement(ElementClassifier.getType(node), node);
     }
 
-    public static List<Expr> getParams(TemplateObject obj, List<String> props) {
-        if (props.isEmpty()) {
+    public static List<Expr> getParams(TemplateObject obj, List<String> fields,
+            List<String> altFields) {
+        if (fields.isEmpty()) {
             return Collections.emptyList();
         }
 
+        List<Expr> params = null;
+        try {
+            params = tryProps(obj, fields);
+        } catch (InaccessibleFieldException e) {
+            // error accessing a field. This can be due to the fact that FM 
+            // internal field names can change across versions. Try the 
+            // alternate set of field names, if available.
+            if (altFields != null) {
+                params = tryProps(obj, altFields);
+            } else {
+                throw e;
+            }
+        }
+
+        return Collections.unmodifiableList(params);
+    }
+
+    private static List<Expr> tryProps(TemplateObject obj, List<String> fields) {
         List<Expr> params = new ArrayList<Expr>();
-        for (String prop : props) {
+        for (String field : fields) {
             Object p;
             try {
-                p = (Object) FieldUtils.readField(obj, prop, true);
+                p = (Object) FieldUtils.readField(obj, field, true);
             } catch (IllegalAccessException iae) {
-                throw new RuntimeException("Could not access field " + prop, iae);
+                throw new InaccessibleFieldException(field, iae);
+            } catch (IllegalArgumentException iae) {
+                throw new InaccessibleFieldException(field, iae);
             }
             if (p instanceof Expression) {
                 // wrap Expression objects as our public Expr
@@ -37,7 +58,6 @@ class IntrospectionClassFactory {
                 params.add(new ObjectExpr(ExprType.VALUE, obj, p));
             }
         }
-
-        return Collections.unmodifiableList(params);
+        return params;
     }
 }

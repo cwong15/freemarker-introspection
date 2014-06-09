@@ -11,13 +11,14 @@ public enum ExprType {
     ADD_CONCAT("AddConcatExpression", "left", "right"),
 
     /** And operator. Parameters: left, right operands */
-    AND("AndExpression", "lho", "rho"),
+    AND("AndExpression", l("lho", "rho"), l("left", "right")),
 
     /** 
      * Arithmetic expression (-, *, /, % operations). Parameters: left operand, 
      * right operand, operator.
      */
-    ARITHMETIC("ArithmeticExpression", "lho", "rho", "operator"),
+    ARITHMETIC("ArithmeticExpression", l("lho", "rho", "operator"),
+            l("left", "right", "operation")),
 
     /** Boolean literal. Parameter: value */
     BOOLEAN_LITERAL("BooleanLiteral", "val"),
@@ -32,7 +33,7 @@ public enum ExprType {
     COMPARISON("ComparisonExpression", "left", "right"),
 
     /** Default to expression. Parameters: left, right operands. */
-    DEFAULT_TO("DefaultToExpression", "lho", "rho"),
+    DEFAULT_TO("DefaultToExpression", l("lho", "rho"), l("lhs", "rhs")),
 
     /** Dot expression. Parameters: target, key. */
     DOT("Dot", "target", "key"),
@@ -50,7 +51,7 @@ public enum ExprType {
     IDENTIFIER("Identifier", "name"),
 
     /** List literal. Parameter: items */
-    LIST_LITERAL("ListLiteral", "items"),
+    LIST_LITERAL("ListLiteral", l("items"), l("values")),
 
     /** Method call. Parameters: target, arguments */
     METHOD_CALL("MethodCall", "target", "arguments"),
@@ -62,13 +63,13 @@ public enum ExprType {
     NUMBER_LITERAL("NumberLiteral", "value"),
 
     /** Or expression. Parameters: left, right operands.*/
-    OR("OrExpression", "lho", "rho"),
+    OR("OrExpression", l("lho", "rho"), l("left", "right")),
 
     /** Parenthetical expression. Parameter: nested expression */
     PARENTHETICAL("ParentheticalExpression", "nested"),
 
     /** Range. Parameters: left, right operands */
-    RANGE("Range", "lho", "rho"),
+    RANGE("Range", l("lho", "rho"), l("left", "right")),
 
     /** String literal. Parameter: value */
     STRING_LITERAL("StringLiteral", "value"),
@@ -86,18 +87,32 @@ public enum ExprType {
     GENERIC("");
 
     private String className;
-    private List<String> subExprProps;
+    private List<String> subExprFields;
+    private List<String> altExprFields;
 
-    private ExprType(String className, String... exprProps) {
+    private ExprType(String className, String... exprFields) {
+        this(className, l(exprFields), null);
+    }
+
+    private ExprType(String className, List<String> exprFields, List<String> altFields) {
         this.className = className;
-        this.subExprProps = Arrays.asList(exprProps);
+        this.subExprFields = exprFields;
+        this.altExprFields = altFields;
     }
 
     public String getClassName() {
         return this.className;
     }
 
-    List<String> getSubExprProps() {
-        return this.subExprProps;
+    List<String> getSubExprFields() {
+        return this.subExprFields;
+    }
+
+    List<String> getAltExprFields() {
+        return this.altExprFields;
+    }
+
+    private static List<String> l(String... fields) {
+        return Arrays.asList(fields);
     }
 }

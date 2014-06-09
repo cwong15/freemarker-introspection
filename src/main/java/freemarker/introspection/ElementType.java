@@ -36,7 +36,7 @@ public enum ElementType {
      * A case in a switch statement. Parameters: condition (may be null),
      * default.
      */
-    CASE("Case", "condition"),
+    CASE("Case", l("condition"), l("expression")),
 
     /**
      * Comment. Parameter: text. 
@@ -50,7 +50,7 @@ public enum ElementType {
      * Conditional block in an if statement. Parameters: condition
      * (may be null), type.
      */
-    CONDITIONAL_BLOCK("ConditionalBlock", "condition", "type"),
+    CONDITIONAL_BLOCK("ConditionalBlock", "condition"),
 
     /** Debug break */
     DEBUG_BREAK("DebugBreak"),
@@ -77,12 +77,14 @@ public enum ElementType {
     /**
      * Represents an include. Parameters: template name, parse, encoding.
      */
-    INCLUDE("Include", "templateName", "parse", "encoding"),
+    INCLUDE("Include", l("templateName", "parse", "encoding"),
+            l("includedTemplateName", "parse", "encoding")),
 
     /**
      * Iterator block. Parameters: list source, loop variable name
      */
-    ITERATOR_BLOCK("IteratorBlock", "listSource", "loopVariableName"),
+    ITERATOR_BLOCK("IteratorBlock", l("listSource", "loopVariableName"),
+            l("listExpression", "indexName")),
 
     /**
      * Library load. Parameters: template name, namespace.
@@ -90,7 +92,7 @@ public enum ElementType {
     LIBRARY_LOAD("LibraryLoad", "templateName", "namespace"),
 
     /** Macro. Parameters: name, parameter names */
-    MACRO("Macro", "name", "paramNames"),
+    MACRO("Macro", l("name", "paramNames"), l("name", "argumentNames")),
 
     /** Mixed content. */
     MIXED_CONTENT("MixedContent"),
@@ -117,7 +119,7 @@ public enum ElementType {
     STOP_INSTRUCTION("StopInstruction", "exp"),
 
     /** Switch block. Parameter: search expression. */
-    SWITCH_BLOCK("SwitchBlock", "searched"),
+    SWITCH_BLOCK("SwitchBlock", l("searched"), l("testExpression")),
 
     /** Text block. Parameter: text */
     TEXT_BLOCK("TextBlock", "text"),
@@ -138,18 +140,33 @@ public enum ElementType {
     GENERIC("");
 
     private String className;
-    private List<String> paramProps;
+    private List<String> paramFields;
+    private List<String> altParamFields;
 
-    private ElementType(String className, String... paramProps) {
+    private ElementType(String className, String... paramFields) {
+        this(className, l(paramFields), null);
+    }
+
+    private ElementType(String className, List<String> paramProps,
+            List<String> altParamProps) {
         this.className = className;
-        this.paramProps = Arrays.asList(paramProps);
+        this.paramFields = paramProps;
+        this.altParamFields = altParamProps;
     }
 
     String getClassName() {
         return this.className;
     }
 
-    List<String> getParamProps() {
-        return this.paramProps;
+    List<String> getParamFields() {
+        return this.paramFields;
+    }
+
+    List<String> getAltParamFields() {
+        return this.altParamFields;
+    }
+
+    private static List<String> l(String... fields) {
+        return Arrays.asList(fields);
     }
 }
