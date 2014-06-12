@@ -12,12 +12,6 @@ public interface Element extends TemplateNode {
     /** Returns a list of this element's immediate nested elements */
     List<Element> getChildren();
 
-    /** 
-     * Returns a list of this element's parameters. The number and type of
-     * parameters depends on the type of the element.
-     */
-    List<Expr> getParams();
-
     /** Returns a human-readable description of this element */
     String getDescription();
 

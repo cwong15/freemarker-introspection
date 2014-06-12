@@ -1,5 +1,7 @@
 package freemarker.introspection;
 
+import java.util.List;
+
 /**
  * Represents a Freemarker node in a template 
  */
@@ -15,4 +17,10 @@ public interface TemplateNode {
 
     /** The end line location of this node in the template */
     int getEndLine();
+
+    /** 
+     * Returns a list of this node's parameters. The number and type of
+     * parameters depends on the type of the node.
+     */
+    List<Expr> getParams();
 }

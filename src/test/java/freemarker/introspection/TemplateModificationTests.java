@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -87,14 +88,25 @@ public class TemplateModificationTests {
                 newTemplateText.indexOf("${other"));
     }
 
-    private static class NodeFinder extends VariableFinder {
+    /**
+     * Looks for variables that end with "thing" and include elements.
+     */
+    private static class NodeFinder implements ElementVisitor, ExprVisitor {
+        private Element root;
         private List<Expr> thingVariables;
         private List<Element> includeElements;
+        private Set<String> variables;
 
         NodeFinder(Element root) {
-            super(root);
+            this.root = root;
             thingVariables = new ArrayList<Expr>();
             includeElements = new ArrayList<Element>();
+            variables = new HashSet<String>();
+        }
+
+        public NodeFinder seek() {
+            root.accept(this);
+            return this;
         }
 
         public List<Expr> getThingVariables() {
@@ -105,25 +117,40 @@ public class TemplateModificationTests {
             return includeElements;
         }
 
-        public void visit(Element element) {
+        public boolean visit(Element element) {
             if (element.getType() == ElementType.INCLUDE) {
                 includeElements.add(element);
+            } else {
+                scanParams(element);
             }
-            super.visit(element);
+            return true;
         }
 
         public void visit(Expr expr) {
             switch (expr.getType()) {
                 case IDENTIFIER:
                 case DOT:
-                    if (expr.toString().endsWith("thing")) {
+                    String name = expr.toString();
+                    variables.add(name);
+                    if (name.endsWith("thing")) {
                         thingVariables.add(expr);
                     }
-                    super.visit(expr);
                     break;
                 default:
-                    super.visit(expr);
+                    scanParams(expr);
             }
+        }
+
+        private void scanParams(TemplateNode node) {
+            for (Expr e : node.getParams()) {
+                if (e != null) {
+                    e.accept(this);
+                }
+            }
+        }
+
+        public Set<String> getVariables() {
+            return variables;
         }
     }
 }

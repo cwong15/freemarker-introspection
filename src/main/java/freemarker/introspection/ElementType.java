@@ -8,10 +8,10 @@ import java.util.List;
  */
 public enum ElementType {
     /** 
-     * Variable assignment. Parameters: variable name, value, scope
+     * Variable assignment. Parameters: variable name, scope, value
      * and namespace 
      */
-    ASSIGNMENT("Assignment", "variableName", "value", "scope", "namespaceExp"),
+    ASSIGNMENT("Assignment", "variableName", "scope", "value", "namespaceExp"),
 
     /**
      * Assignment instruction. Parameters: scope, namespace.
@@ -91,7 +91,7 @@ public enum ElementType {
      */
     LIBRARY_LOAD("LibraryLoad", "templateName", "namespace"),
 
-    /** Macro. Parameters: name, parameter names */
+    /** Macro. Parameters: name, parameter names... */
     MACRO("Macro", l("name", "paramNames"), l("name", "argumentNames")),
 
     /** Mixed content. */

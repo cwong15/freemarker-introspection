@@ -87,8 +87,8 @@ public enum ExprType {
     GENERIC("");
 
     private String className;
-    private List<String> subExprFields;
-    private List<String> altExprFields;
+    private List<String> subExprFields; // FM 2.3.20
+    private List<String> altExprFields; // FM 2.3.19
 
     private ExprType(String className, String... exprFields) {
         this(className, l(exprFields), null);

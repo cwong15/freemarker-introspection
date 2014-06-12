@@ -75,11 +75,12 @@ public class ComprehensiveTests {
             }
         }
 
-        public void visit(Element element) {
+        public boolean visit(Element element) {
             elements.put(element.getType(), element);
             for (Expr e : element.getParams()) {
                 e.accept(this);
             }
+            return true;
         }
     }
 }

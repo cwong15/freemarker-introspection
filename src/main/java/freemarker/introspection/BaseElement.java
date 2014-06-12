@@ -72,9 +72,11 @@ public class BaseElement implements Element {
     }
 
     public void accept(ElementVisitor visitor) {
-        visitor.visit(this);
-        for (Element e : getChildren()) {
-            e.accept(visitor);
+        boolean recurse = visitor.visit(this);
+        if (recurse) {
+            for (Element e : getChildren()) {
+                e.accept(visitor);
+            }
         }
     }
 }

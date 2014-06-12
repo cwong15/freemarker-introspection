@@ -1,5 +1,6 @@
 package freemarker.introspection;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -54,10 +55,23 @@ class IntrospectionClassFactory {
                 // wrap Expression objects as our public Expr
                 Expression fmExpr = (Expression) p;
                 params.add(new BaseExpr(ExprClassifier.getType(fmExpr), fmExpr));
-            } else {
-                params.add(new ObjectExpr(ExprType.VALUE, obj, p));
+            } else if (p != null) {
+                appendObjectExprs(params, obj, p);
             }
         }
         return params;
+    }
+
+    private static void appendObjectExprs(List<Expr> params, TemplateObject node,
+            Object value) {
+        if (value.getClass().isArray()) {
+            // unpack an array into individual VALUE exprs
+            int arrayLength = Array.getLength(value);
+            for (int i = 0; i < arrayLength; i++) {
+                params.add(new ObjectExpr(ExprType.VALUE, node, Array.get(value, i)));
+            }
+        } else {
+            params.add(new ObjectExpr(ExprType.VALUE, node, value));
+        }
     }
 }
