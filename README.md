@@ -1,6 +1,7 @@
-# freemarker-introspection: Freemarker parse tree introspection
+# freemarker-introspection
 
-This project provides Freemarker template introspection capability.
+This project provides Freemarker template introspection capability. It exposes
+a parsed AST structure for programmatic inspection.
 
 This project is basically in a very rough proof-of-concept state. All code here
 is for illustrative purposes only and cannot be relied on to be stable.
