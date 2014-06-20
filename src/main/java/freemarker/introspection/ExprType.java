@@ -71,8 +71,8 @@ public enum ExprType {
     /** Range. Parameters: left, right operands */
     RANGE("Range", l("lho", "rho"), l("left", "right")),
 
-    /** String literal. Parameter: value */
-    STRING_LITERAL("StringLiteral", "value"),
+    /** String literal. Implements StringExpr interface. */
+    STRING_LITERAL("StringLiteral"),
 
     /** Unary plus/minus expression */
     UNARY_PLUS_MINUS("UnaryPlusMinusExpression"),

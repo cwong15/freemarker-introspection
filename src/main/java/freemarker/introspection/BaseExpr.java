@@ -6,10 +6,10 @@ import freemarker.core.Expression;
 
 class BaseExpr implements Expr {
     private ExprType type;
-    private Expression expr;
+    Expression expr;
 
     // populated lazily as needed
-    private List<Expr> params = null;
+    List<Expr> params = null;
 
     BaseExpr(ExprType type, Expression expr) {
         this.type = type;

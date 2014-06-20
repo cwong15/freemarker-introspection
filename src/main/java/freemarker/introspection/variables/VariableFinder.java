@@ -11,10 +11,12 @@ import java.util.Set;
 
 import freemarker.core.VarScope;
 import freemarker.introspection.Element;
+import freemarker.introspection.ElementType;
 import freemarker.introspection.ElementVisitor;
 import freemarker.introspection.Expr;
 import freemarker.introspection.ExprType;
 import freemarker.introspection.ExprVisitor;
+import freemarker.introspection.StringExpr;
 import freemarker.introspection.TemplateNode;
 import freemarker.introspection.ValueExpr;
 
@@ -83,8 +85,7 @@ public class VariableFinder implements ElementVisitor, ExprVisitor {
         switch (element.getType()) {
             case ASSIGNMENT:
             case BLOCK_ASSIGNMENT:
-                processAssignment(element);
-                break;
+                return processAssignment(element);
             case INCLUDE:
                 // TODO: optionally chase includes
                 break;
@@ -94,6 +95,7 @@ public class VariableFinder implements ElementVisitor, ExprVisitor {
                 typeStack.removeFirst();
                 break;
             case ITERATOR_BLOCK:
+                scanParams(element);
                 processNewScope(element, element.getParams().get(1));
                 return false;
             case MACRO:
@@ -117,8 +119,22 @@ public class VariableFinder implements ElementVisitor, ExprVisitor {
      * in the current or namespace scope so we can tell if a variable that
      * we might encounter later is shadowed by this assigned variable.  
      */
-    private void processAssignment(Element element) {
+    private boolean processAssignment(Element element) {
+        boolean recurse = true;
+        if (element.getType() == ElementType.BLOCK_ASSIGNMENT) {
+            // block assignment: visit children first, then process var
+            for (Element child : element.getChildren()) {
+                child.accept(this);
+            }
+            recurse = false;
+        }
+
+        // visit all expressions apart from the assigned var name (first param).
         List<Expr> params = element.getParams();
+        for (int i = 1; i < params.size(); i++) {
+            params.get(i).accept(this);
+        }
+
         int scope = (Integer) ((ValueExpr) element.getParams().get(1)).getValue();
         String varName = params.get(0).toString();
 
@@ -135,10 +151,7 @@ public class VariableFinder implements ElementVisitor, ExprVisitor {
                 break;
         }
 
-        // visit all expressions apart from the assigned var name.
-        for (int i = 1; i < params.size(); i++) {
-            params.get(i).accept(this);
-        }
+        return recurse;
     }
 
     /**
@@ -204,6 +217,18 @@ public class VariableFinder implements ElementVisitor, ExprVisitor {
                 scanParams(expr);
                 typeStack.removeFirst();
                 break;
+            case STRING_LITERAL:
+                StringExpr strExpr = (StringExpr) expr;
+                Element dynElement = strExpr.getDynamicValue();
+                if (dynElement != null) {
+                    dynElement.accept(this);
+                }
+                break;
+            case RANGE:
+                typeStack.addFirst(VariableType.NUMBER);
+                scanParams(expr);
+                typeStack.removeFirst();
+                break;
             default:
                 scanParams(expr);
         }
@@ -235,12 +260,14 @@ public class VariableFinder implements ElementVisitor, ExprVisitor {
         if (isVariable(params.get(0)) && vi != null) {
             Expr rhs = params.get(1);
             if (rhs.getType() == ExprType.BOOLEAN_LITERAL ||
-                    rhs.getType() == ExprType.NUMBER_LITERAL ||
-                    rhs.getType() == ExprType.STRING_LITERAL) {
+                    rhs.getType() == ExprType.NUMBER_LITERAL) {
                 Object value = ((ValueExpr) rhs.getParams().get(0)).getValue();
                 if (value != null) {
                     vi.getValues().add(value);
                 }
+            } else if (rhs.getType() == ExprType.STRING_LITERAL) {
+                StringExpr strExpr = (StringExpr) rhs;
+                vi.getValues().add(strExpr.getValue());
             }
         }
     }

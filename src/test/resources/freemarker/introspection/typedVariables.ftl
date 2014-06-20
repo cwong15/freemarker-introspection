@@ -61,3 +61,8 @@ ${unknownvar4} ... not shadowed from assignment in list above
 
 ${strvar6!''} ... no longer shadowed
 
+<#list numVar7..numVar8 as x7>
+	<#assign numvar9 = numvar9 + 1>
+	<#assign x6 = '${unknownvar7}'>
+</#list>	
+

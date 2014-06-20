@@ -54,7 +54,12 @@ class IntrospectionClassFactory {
             if (p instanceof Expression) {
                 // wrap Expression objects as our public Expr
                 Expression fmExpr = (Expression) p;
-                params.add(new BaseExpr(ExprClassifier.getType(fmExpr), fmExpr));
+                ExprType exprType = ExprClassifier.getType(fmExpr);
+                if (exprType == ExprType.STRING_LITERAL) {
+                    params.add(new StringLiteralExpr(fmExpr));
+                } else {
+                    params.add(new BaseExpr(ExprClassifier.getType(fmExpr), fmExpr));
+                }
             } else if (p != null) {
                 appendObjectExprs(params, obj, p);
             }
