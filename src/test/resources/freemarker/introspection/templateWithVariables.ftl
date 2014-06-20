@@ -11,4 +11,8 @@
 [#include "includedContent.html"]
 
 Example of simple variable reference: ${thing?upper_case?trim}
-Example of dot variable reference: ${this.thing?lower_case!'default_txt'}            
+Example of dot variable reference: ${this.thing?lower_case!'default_txt'}
+
+[#if 0 < somevar && somevar < 10]
+    Something.
+[/#if]            

@@ -12,7 +12,7 @@ public class VariableInfo {
     private String name;
     private VariableType type = VariableType.UNKNOWN;
     private List<Object> values = new ArrayList<Object>();
-    private Expr variable;
+    private List<Expr> variables = new ArrayList<Expr>();
 
     /** name of the variable */
     public String getName() {
@@ -41,13 +41,13 @@ public class VariableInfo {
         this.values = values;
     }
 
-    /** underlying variable node */
-    public Expr getVariable() {
-        return variable;
+    /** underlying variable nodes */
+    public List<Expr> getVariables() {
+        return variables;
     }
 
-    public void setVariable(Expr variable) {
-        this.variable = variable;
+    public void setVariables(List<Expr> variables) {
+        this.variables = variables;
     }
 
     public String toString() {

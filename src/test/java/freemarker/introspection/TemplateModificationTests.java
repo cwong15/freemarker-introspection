@@ -17,6 +17,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import freemarker.cache.StringTemplateLoader;
+import freemarker.introspection.variables.VariableFinder;
+import freemarker.introspection.variables.VariableInfo;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 
@@ -86,6 +88,34 @@ public class TemplateModificationTests {
         assertFalse(newTemplateText.contains("${this.thing"));
         assertEquals(templateText.indexOf("${thing"),
                 newTemplateText.indexOf("${other"));
+    }
+
+    @Test
+    public void testFindAndRenameMultipleVariables() {
+        // use the VariableFinder class to find a variable called "somevar" to 
+        // rename. This tests renaming multiple occurrences of the same variable
+
+        List<VariableInfo> results = new VariableFinder(
+                TemplateIntrospector.getRootNode(template))
+                .seek()
+                .getVariableInfo();
+
+        TemplateEditor editor = new TemplateEditor(templateText);
+        for (VariableInfo vi : results) {
+            if (vi.getName().equals("somevar")) {
+                for (Expr var : vi.getVariables()) {
+                    editor.replace(var, "othervar");
+                }
+            }
+        }
+
+        String origText = "[#if 0 < somevar && somevar < 10]";
+        String updatedText = "[#if 0 < othervar && othervar < 10]";
+        String newTemplate = editor.apply().getModifiedTemplate();
+        assertTrue(templateText.contains(origText));
+        assertFalse(newTemplate.contains(origText));
+        assertFalse(templateText.contains(updatedText));
+        assertTrue(newTemplate.contains(updatedText));
     }
 
     /**

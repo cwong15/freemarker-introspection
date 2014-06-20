@@ -337,11 +337,11 @@ public class VariableFinder implements ElementVisitor, ExprVisitor {
                 vi = new VariableInfo();
                 vi.setName(variableName);
                 vi.setType(type);
-                vi.setVariable(variable);
                 vars.put(variableName, vi);
             } else if (vi.getType() == VariableType.UNKNOWN) {
                 vi.setType(type);
             }
+            vi.getVariables().add(variable);
             return vi;
         } else {
             return null;

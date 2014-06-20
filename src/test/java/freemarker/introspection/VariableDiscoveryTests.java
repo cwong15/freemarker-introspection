@@ -31,7 +31,7 @@ public class VariableDiscoveryTests {
     public void testFindVariables() throws IOException {
         Template template = config.getTemplate("templateWithVariables.ftl");
         Set<String> expectedVariables = new LinkedHashSet<String>(
-                Arrays.asList("foo", "bar", "thing", "this.thing"));
+                Arrays.asList("foo", "bar", "thing", "this.thing", "somevar"));
 
         Element root = TemplateIntrospector.getRootNode(template);
         Set<String> variables = new VariableFinder(root).seek().getVariables();
@@ -59,7 +59,9 @@ public class VariableDiscoveryTests {
                 assertEquals(vi.getName() + " should be unknown type",
                         VariableType.UNKNOWN, vi.getType());
             }
-            assertEquals(vi.getName(), vi.getVariable().toString());
+            for (Expr var : vi.getVariables()) {
+                assertEquals(vi.getName(), var.toString());
+            }
         }
     }
 
