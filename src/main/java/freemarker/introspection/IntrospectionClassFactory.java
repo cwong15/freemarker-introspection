@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.lang3.reflect.FieldUtils;
-
 import freemarker.core.ExprClassifier;
 import freemarker.core.Expression;
 import freemarker.core.IntrospectionAccessor;
@@ -30,56 +28,6 @@ class IntrospectionClassFactory {
                 // wrap Expression objects as our public Expr
                 Expression fmExpr = (Expression) paramObj;
                 ExprType exprType = ExprClassifier.getType(fmExpr);
-                if (exprType == ExprType.STRING_LITERAL) {
-                    params.add(new StringLiteralExpr(fmExpr));
-                } else {
-                    params.add(new BaseExpr(ExprClassifier.getType(fmExpr), fmExpr));
-                }
-            } else if (paramObj != null) {
-                appendObjectExprs(params, obj, paramObj);
-            }
-        }
-        return params;
-    }
-
-    public static List<Expr> getParams(TemplateObject obj, List<String> fields,
-            List<String> altFields) {
-        if (fields.isEmpty()) {
-            return Collections.emptyList();
-        }
-
-        List<Expr> params = null;
-        try {
-            params = tryProps(obj, fields);
-        } catch (InaccessibleFieldException e) {
-            // error accessing a field. This can be due to the fact that FM 
-            // internal field names can change across versions. Try the 
-            // alternate set of field names, if available.
-            if (altFields != null) {
-                params = tryProps(obj, altFields);
-            } else {
-                throw e;
-            }
-        }
-
-        return Collections.unmodifiableList(params);
-    }
-
-    private static List<Expr> tryProps(TemplateObject obj, List<String> fields) {
-        List<Expr> params = new ArrayList<Expr>();
-        for (String field : fields) {
-            Object p;
-            try {
-                p = (Object) FieldUtils.readField(obj, field, true);
-            } catch (IllegalAccessException iae) {
-                throw new InaccessibleFieldException(field, iae);
-            } catch (IllegalArgumentException iae) {
-                throw new InaccessibleFieldException(field, iae);
-            }
-            if (p instanceof Expression) {
-                // wrap Expression objects as our public Expr
-                Expression fmExpr = (Expression) p;
-                ExprType exprType = ExprClassifier.getType(fmExpr);
                 Expr expr = null;
                 switch (exprType) {
                     case STRING_LITERAL:
@@ -95,8 +43,8 @@ class IntrospectionClassFactory {
                         expr = new BaseExpr(exprType, fmExpr);
                 }
                 params.add(expr);
-            } else if (p != null) {
-                appendObjectExprs(params, obj, p);
+            } else if (paramObj != null) {
+                appendObjectExprs(params, obj, paramObj);
             }
         }
         return params;
