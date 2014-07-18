@@ -6,7 +6,7 @@ import freemarker.core.Expression;
 import freemarker.core.IntrospectionAccessor;
 import freemarker.core.TemplateElement;
 
-public class StringLiteralExpr extends BaseExpr implements StringExpr {
+class StringLiteralExpr extends BaseExpr implements StringExpr {
     private static final String DYN_FIELD = "dynamicValue";
     private static final String ALT_DYN_FIELD = "interpolatedOutput";
 
@@ -14,7 +14,7 @@ public class StringLiteralExpr extends BaseExpr implements StringExpr {
         super(ExprType.STRING_LITERAL, expr);
     }
 
-    public String getValue() {
+    public Object getValue() {
         return IntrospectionAccessor.getStringLiteralValue(expr);
     }
 

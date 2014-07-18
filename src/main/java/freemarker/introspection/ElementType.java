@@ -11,7 +11,7 @@ public enum ElementType {
      * Variable assignment. Parameters: variable name, scope, value
      * and namespace 
      */
-    ASSIGNMENT("Assignment", "variableName", "scope", "value", "namespaceExp"),
+    ASSIGNMENT("Assignment", "variableName", "value", "scope", "namespaceExp"),
 
     /**
      * Assignment instruction. Parameters: scope, namespace.

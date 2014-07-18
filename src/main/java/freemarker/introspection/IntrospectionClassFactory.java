@@ -55,11 +55,21 @@ class IntrospectionClassFactory {
                 // wrap Expression objects as our public Expr
                 Expression fmExpr = (Expression) p;
                 ExprType exprType = ExprClassifier.getType(fmExpr);
-                if (exprType == ExprType.STRING_LITERAL) {
-                    params.add(new StringLiteralExpr(fmExpr));
-                } else {
-                    params.add(new BaseExpr(ExprClassifier.getType(fmExpr), fmExpr));
+                Expr expr = null;
+                switch (exprType) {
+                    case STRING_LITERAL:
+                        expr = new StringLiteralExpr(fmExpr);
+                        break;
+                    case NUMBER_LITERAL:
+                        expr = new NumberLiteralExpr(fmExpr);
+                        break;
+                    case BOOLEAN_LITERAL:
+                        expr = new BooleanLiteralExpr(fmExpr);
+                        break;
+                    default:
+                        expr = new BaseExpr(exprType, fmExpr);
                 }
+                params.add(expr);
             } else if (p != null) {
                 appendObjectExprs(params, obj, p);
             }

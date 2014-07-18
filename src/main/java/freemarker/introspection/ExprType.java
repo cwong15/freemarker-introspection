@@ -20,8 +20,8 @@ public enum ExprType {
     ARITHMETIC("ArithmeticExpression", l("lho", "rho", "operator"),
             l("left", "right", "operation")),
 
-    /** Boolean literal. Parameter: value */
-    BOOLEAN_LITERAL("BooleanLiteral", "val"),
+    /** Boolean literal. Implements LiteralExpr interface */
+    BOOLEAN_LITERAL("BooleanLiteral"),
 
     /** Builtin. Parameters: target, key */
     BUILTIN("BuiltIn", "target", "key"),
@@ -59,8 +59,8 @@ public enum ExprType {
     /** Not expression. Parameter: target expression. */
     NOT("NotExpression", "target"),
 
-    /** Number literal. Parameter: value */
-    NUMBER_LITERAL("NumberLiteral", "value"),
+    /** Number literal. Implements LiteralExpr interface */
+    NUMBER_LITERAL("NumberLiteral"),
 
     /** Or expression. Parameters: left, right operands.*/
     OR("OrExpression", l("lho", "rho"), l("left", "right")),

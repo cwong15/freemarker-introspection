@@ -16,6 +16,7 @@ import freemarker.introspection.ElementVisitor;
 import freemarker.introspection.Expr;
 import freemarker.introspection.ExprType;
 import freemarker.introspection.ExprVisitor;
+import freemarker.introspection.LiteralExpr;
 import freemarker.introspection.StringExpr;
 import freemarker.introspection.TemplateNode;
 import freemarker.introspection.ValueExpr;
@@ -135,7 +136,8 @@ public class VariableFinder implements ElementVisitor, ExprVisitor {
             params.get(i).accept(this);
         }
 
-        int scope = (Integer) ((ValueExpr) element.getParams().get(1)).getValue();
+        int scopeIdx = element.getType() == ElementType.BLOCK_ASSIGNMENT ? 1 : 2;
+        int scope = (Integer) ((ValueExpr) element.getParams().get(scopeIdx)).getValue();
         String varName = params.get(0).toString();
 
         switch (scope) {
@@ -259,15 +261,8 @@ public class VariableFinder implements ElementVisitor, ExprVisitor {
         VariableInfo vi = scanLeftRightExpr(params.get(0), params.get(1));
         if (isVariable(params.get(0)) && vi != null) {
             Expr rhs = params.get(1);
-            if (rhs.getType() == ExprType.BOOLEAN_LITERAL ||
-                    rhs.getType() == ExprType.NUMBER_LITERAL) {
-                Object value = ((ValueExpr) rhs.getParams().get(0)).getValue();
-                if (value != null) {
-                    vi.getValues().add(value);
-                }
-            } else if (rhs.getType() == ExprType.STRING_LITERAL) {
-                StringExpr strExpr = (StringExpr) rhs;
-                vi.getValues().add(strExpr.getValue());
+            if (rhs instanceof LiteralExpr) {
+                vi.getValues().add(((LiteralExpr) rhs).getValue());
             }
         }
     }
