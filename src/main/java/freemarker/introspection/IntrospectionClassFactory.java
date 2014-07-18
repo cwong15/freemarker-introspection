@@ -9,12 +9,37 @@ import org.apache.commons.lang3.reflect.FieldUtils;
 
 import freemarker.core.ExprClassifier;
 import freemarker.core.Expression;
+import freemarker.core.IntrospectionAccessor;
 import freemarker.core.TemplateElement;
 import freemarker.core.TemplateObject;
 
 class IntrospectionClassFactory {
     public static Element getIntrospectionElement(TemplateElement node) {
         return new BaseElement(ElementClassifier.getType(node), node);
+    }
+
+    public static List<Expr> getParams(TemplateObject obj) {
+        List<Object> paramObjs = IntrospectionAccessor.getParamValues(obj);
+        if (paramObjs.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<Expr> params = new ArrayList<Expr>(paramObjs.size());
+        for (Object paramObj : paramObjs) {
+            if (paramObj instanceof Expression) {
+                // wrap Expression objects as our public Expr
+                Expression fmExpr = (Expression) paramObj;
+                ExprType exprType = ExprClassifier.getType(fmExpr);
+                if (exprType == ExprType.STRING_LITERAL) {
+                    params.add(new StringLiteralExpr(fmExpr));
+                } else {
+                    params.add(new BaseExpr(ExprClassifier.getType(fmExpr), fmExpr));
+                }
+            } else if (paramObj != null) {
+                appendObjectExprs(params, obj, paramObj);
+            }
+        }
+        return params;
     }
 
     public static List<Expr> getParams(TemplateObject obj, List<String> fields,

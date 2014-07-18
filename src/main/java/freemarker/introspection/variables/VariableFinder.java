@@ -263,9 +263,9 @@ public class VariableFinder implements ElementVisitor, ExprVisitor {
             Expr rhs = params.get(1);
             if (rhs instanceof LiteralExpr) {
                 vi.getValues().add(((LiteralExpr) rhs).getValue());
+                }
             }
         }
-    }
 
     // handles binary expressions like a+b, a-b, a<b, a!b. If one operand is a 
     // variable, we can infer the type from the other.
