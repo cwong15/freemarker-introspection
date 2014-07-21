@@ -1,7 +1,6 @@
 package freemarker.introspection;
 
 import freemarker.core.Expression;
-import freemarker.core.IntrospectionAccessor;
 
 class BooleanLiteralExpr extends BaseExpr implements LiteralExpr {
     BooleanLiteralExpr(Expression expr) {
@@ -9,6 +8,7 @@ class BooleanLiteralExpr extends BaseExpr implements LiteralExpr {
     }
 
     public Object getValue() {
-        return IntrospectionAccessor.getBooleanLiteralValue(expr);
+        String boolStr = expr.toString();
+        return "true".equals(boolStr);
     }
 }

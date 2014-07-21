@@ -12,8 +12,4 @@ public class IntrospectionAccessor {
     public static Number getNumberLiteralValue(Expression expr) {
         return ((NumberLiteral) expr).getAsNumber();
     }
-
-    public static boolean getBooleanLiteralValue(Expression expr) {
-        return ((BooleanLiteral) expr).evalToBoolean(null);
-    }
 }
