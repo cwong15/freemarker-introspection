@@ -16,7 +16,6 @@ public class IntrospectionAccessor {
     public static Number getNumberLiteralValue(Expression expr) {
         return ((NumberLiteral) expr).getAsNumber();
     }
-    }
 
     public static List<Object> getParamValues(TemplateObject obj) {
         if (obj.getParameterCount() == 0) {
