@@ -1,15 +1,13 @@
 package freemarker.introspection;
 
+import static freemarker.introspection.TemplateTestUtils.assertIdentifier;
+import static freemarker.introspection.TemplateTestUtils.assertStringExpr;
+import static freemarker.introspection.TemplateTestUtils.assertValue;
+import static freemarker.introspection.TemplateTestUtils.loadTemplateRoot;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.io.IOException;
-
 import org.junit.Test;
-
-import freemarker.cache.StringTemplateLoader;
-import freemarker.template.Configuration;
-import freemarker.template.Template;
 
 /**
  * Tests that each type of Element returns the expected Element.params values
@@ -296,37 +294,5 @@ public class DirectiveParamsTests {
         assertIdentifier(root, 0, "foo");
         assertValue(root, 1, 2);
         assertValue(root, 2, 5);
-    }
-
-    private void assertIdentifier(TemplateNode node, int paramIdx, String name) {
-        Expr identifier = node.getParams().get(paramIdx);
-        assertEquals(ExprType.IDENTIFIER, identifier.getType());
-        assertEquals(name, identifier.toString());
-    }
-
-    private void assertValue(TemplateNode node, int paramIdx, Object expectedValue) {
-        Expr valueExpr = node.getParams().get(paramIdx);
-        assertEquals(ExprType.VALUE, valueExpr.getType());
-        assertEquals(expectedValue, ((ObjectExpr) valueExpr).getValue());
-    }
-
-    private void assertStringExpr(TemplateNode node, int paramIdx, String expectedValue) {
-        Expr strLiteral = node.getParams().get(paramIdx);
-        assertEquals(ExprType.STRING_LITERAL, strLiteral.getType());
-        assertEquals(expectedValue, ((StringExpr) strLiteral).getValue());
-    }
-
-    private Element loadTemplateRoot(String templateText) {
-        StringTemplateLoader tloader = new StringTemplateLoader();
-        tloader.putTemplate("template", templateText);
-        Configuration templateConfig = new Configuration();
-        templateConfig.setTagSyntax(Configuration.SQUARE_BRACKET_TAG_SYNTAX);
-        templateConfig.setTemplateLoader(tloader);
-        try {
-            Template template = templateConfig.getTemplate("template");
-            return TemplateIntrospector.getRootNode(template);
-        } catch (IOException e) {
-            throw new RuntimeException("Error loading template", e);
-        }
     }
 }
