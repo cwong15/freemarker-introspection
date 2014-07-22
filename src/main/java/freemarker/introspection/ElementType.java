@@ -1,22 +1,19 @@
 package freemarker.introspection;
 
-import java.util.Arrays;
-import java.util.List;
-
 /**
  * Represents the type of the element
  */
 public enum ElementType {
     /** 
-     * Variable assignment. Parameters: variable name, scope, value
+     * Variable assignment. Parameters: variable name, value, scope
      * and namespace 
      */
-    ASSIGNMENT("Assignment", "variableName", "value", "scope", "namespaceExp"),
+    ASSIGNMENT("Assignment"),
 
     /**
      * Assignment instruction. Parameters: scope, namespace.
      */
-    ASSIGNMENT_INSTRUCTION("AssignmentInstruction", "scope", "namespaceExp"),
+    ASSIGNMENT_INSTRUCTION("AssignmentInstruction"),
 
     /** Attempt block */
     ATTEMPT_BLOCK("AttemptBlock"),
@@ -24,33 +21,33 @@ public enum ElementType {
     /**
      * Block assignment. Parameters: variable name, scope, namespace.
      */
-    BLOCK_ASSIGNMENT("BlockAssignment", "varName", "scope", "namespaceExp"),
+    BLOCK_ASSIGNMENT("BlockAssignment"),
 
-    /** Body instruction */
+    /** Body instruction. Parameters: loop variables */
     BODY_INSTRUCTION("BodyInstruction"),
 
     /** Break instruction */
     BREAK_INSTRUCTION("BreakInstruction"),
 
     /**
-     * A case in a switch statement. Parameters: condition (may be null),
-     * default.
+     * A case in a switch statement. Parameters: condition (none for #default),
+     * case type.
      */
-    CASE("Case", l("condition"), l("expression")),
+    CASE("Case"),
 
     /**
      * Comment. Parameter: text. 
      */
-    COMMENT("Comment", "text"),
+    COMMENT("Comment"),
 
     /** Compressed block */
     COMPRESSED_BLOCK("CompressedBlock"),
 
     /**
      * Conditional block in an if statement. Parameters: condition
-     * (may be null), type.
+     * (none for #else), type.
      */
-    CONDITIONAL_BLOCK("ConditionalBlock", "condition"),
+    CONDITIONAL_BLOCK("ConditionalBlock"),
 
     /** Debug break */
     DEBUG_BREAK("DebugBreak"),
@@ -58,12 +55,12 @@ public enum ElementType {
     /** 
      * A ${} expression. Parameter: the expression in parenthesis  
      */
-    DOLLAR_VARIABLE("DollarVariable", "expression"),
+    DOLLAR_VARIABLE("DollarVariable"),
 
     /**
      * Escape block. Parameter: variable name, expression
      */
-    ESCAPE_BLOCK("EscapeBlock", "variable", "expr"),
+    ESCAPE_BLOCK("EscapeBlock"),
 
     /** Fallback instruction */
     FALLBACK_INSTRUCTION("FallbackInstruction"),
@@ -77,22 +74,20 @@ public enum ElementType {
     /**
      * Represents an include. Parameters: template name, parse, encoding.
      */
-    INCLUDE("Include", l("templateName", "parse", "encoding"),
-            l("includedTemplateName", "parse", "encoding")),
+    INCLUDE("Include"),
 
     /**
-     * Iterator block. Parameters: list source, loop variable name
+     * Iterator block (#list). Parameters: list source, loop variable name
      */
-    ITERATOR_BLOCK("IteratorBlock", l("listSource", "loopVariableName"),
-            l("listExpression", "indexName")),
+    ITERATOR_BLOCK("IteratorBlock"),
 
     /**
-     * Library load. Parameters: template name, namespace.
+     * Library load (#import). Parameters: template name, namespace.
      */
-    LIBRARY_LOAD("LibraryLoad", "templateName", "namespace"),
+    LIBRARY_LOAD("LibraryLoad"),
 
-    /** Macro. Parameters: name, parameter names... */
-    MACRO("Macro", l("name", "paramNames"), l("name", "argumentNames")),
+    /** Macro. Parameters: name, parameter names..., type (macro/function) */
+    MACRO("Macro"),
 
     /** Mixed content. */
     MIXED_CONTENT("MixedContent"),
@@ -101,72 +96,57 @@ public enum ElementType {
     NO_ESCAPE_BLOCK("NoEscapeBlock"),
 
     /** Numerical output. Parameters: expression, min and max fractional digits */
-    NUMERICAL_OUTPUT("NumericalOutput", "expression", "minFracDigits", "maxFracDigits"),
+    NUMERICAL_OUTPUT("NumericalOutput"),
 
     /** Property setting. Parameters: key, value */
-    PROPERTY_SETTING("PropertySetting", "key", "value"),
+    PROPERTY_SETTING("PropertySetting"),
 
     /** Recovery block */
     RECOVERY_BLOCK("RecoveryBlock"),
 
-    /** Recurse node. Parameters: target node, namespaces */
-    RECURSE_NODE("RecurseNode", "targetNode", "namespaces"),
+    /** Recurse node. Parameters: target node, namespace */
+    RECURSE_NODE("RecurseNode"),
 
-    /** Return instruction. Parameter: expression. */
-    RETURN_INSTRUCTION("ReturnInstruction", "exp"),
+    /** Return instruction. Parameter: expression, if any. */
+    RETURN_INSTRUCTION("ReturnInstruction"),
 
     /** Stop instruction. Parameter: expression. */
-    STOP_INSTRUCTION("StopInstruction", "exp"),
+    STOP_INSTRUCTION("StopInstruction"),
 
-    /** Switch block. Parameter: search expression. */
-    SWITCH_BLOCK("SwitchBlock", l("searched"), l("testExpression")),
+    /** Switch block. Parameter: switch expression. */
+    SWITCH_BLOCK("SwitchBlock"),
 
     /** Text block. Parameter: text */
-    TEXT_BLOCK("TextBlock", "text"),
+    TEXT_BLOCK("TextBlock"),
 
-    /** Transform block. Parameter: transform expression */
-    TRANSFORM_BLOCK("TransformBlock", "transformExpression"),
+    /** 
+     * Transform block. Parameters: transform expression, followed by param name 
+     * and value pairs, in order
+     */
+    TRANSFORM_BLOCK("TransformBlock"),
 
     /** Trim instruction */
     TRIM_INSTRUCTION("TrimInstruction"),
 
-    /** Unified macro/transform call. Parameter: name expression. */
-    UNIFIED_CALL("UnifiedCall", "nameExp"),
+    /** 
+     * Unified macro/transform call. Parameter: name expression, followed by 
+     * param name and default value pairs, in order. 
+     */
+    UNIFIED_CALL("UnifiedCall"),
 
-    /** Visit node. Parameter: target node, namespaces */
-    VISIT_NODE("VisitNode", "targetNode", "namespaces"),
+    /** Visit node. Parameters: target node, namespace */
+    VISIT_NODE("VisitNode"),
 
     /** Unidentified Freemarker element. */
     GENERIC("");
 
     private String className;
-    private List<String> paramFields;
-    private List<String> altParamFields;
 
-    private ElementType(String className, String... paramFields) {
-        this(className, l(paramFields), null);
-    }
-
-    private ElementType(String className, List<String> paramProps,
-            List<String> altParamProps) {
+    private ElementType(String className) {
         this.className = className;
-        this.paramFields = paramProps;
-        this.altParamFields = altParamProps;
     }
 
     String getClassName() {
         return this.className;
-    }
-
-    List<String> getParamFields() {
-        return this.paramFields;
-    }
-
-    List<String> getAltParamFields() {
-        return this.altParamFields;
-    }
-
-    private static List<String> l(String... fields) {
-        return Arrays.asList(fields);
     }
 }

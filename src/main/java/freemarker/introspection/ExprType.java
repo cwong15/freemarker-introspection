@@ -1,80 +1,77 @@
 package freemarker.introspection;
 
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Represents the type of the expression 
  */
 public enum ExprType {
     /** Add concat operator (+ operator). Parameters: left, right operands */
-    ADD_CONCAT("AddConcatExpression", "left", "right"),
+    ADD_CONCAT("AddConcatExpression"),
 
     /** And operator. Parameters: left, right operands */
-    AND("AndExpression", l("lho", "rho"), l("left", "right")),
+    AND("AndExpression"),
 
     /** 
      * Arithmetic expression (-, *, /, % operations). Parameters: left operand, 
      * right operand, operator.
      */
-    ARITHMETIC("ArithmeticExpression", l("lho", "rho", "operator"),
-            l("left", "right", "operation")),
+    ARITHMETIC("ArithmeticExpression"),
 
     /** Boolean literal. Implements LiteralExpr interface */
     BOOLEAN_LITERAL("BooleanLiteral"),
 
     /** Builtin. Parameters: target, key */
-    BUILTIN("BuiltIn", "target", "key"),
+    BUILTIN("BuiltIn"),
 
     /** Builtin variable. */
     BUILTIN_VARIABLE("BuiltinVariable"),
 
     /** Comparison. Parameters: left, right operands. */
-    COMPARISON("ComparisonExpression", "left", "right"),
+    COMPARISON("ComparisonExpression"),
 
     /** Default to expression. Parameters: left, right operands. */
-    DEFAULT_TO("DefaultToExpression", l("lho", "rho"), l("lhs", "rhs")),
+    DEFAULT_TO("DefaultToExpression"),
 
     /** Dot expression. Parameters: target, key. */
-    DOT("Dot", "target", "key"),
+    DOT("Dot"),
 
     /** Dynamic key name. Parameters: target, name expression. */
-    DYNAMIC_KEY_NAME("DynamicKeyName", "target", "nameExpression"),
+    DYNAMIC_KEY_NAME("DynamicKeyName"),
 
     /** Exists expression. Parameter: exp */
-    EXISTS("ExistsExpression", "exp"),
+    EXISTS("ExistsExpression"),
 
     /** Hash literal */
     HASH_LITERAL("HashLiteral"),
 
-    /** Identifier. Parameter: name. */
-    IDENTIFIER("Identifier", "name"),
+    /** Identifier. */
+    IDENTIFIER("Identifier"),
 
-    /** List literal. Parameter: items */
-    LIST_LITERAL("ListLiteral", l("items"), l("values")),
+    /** List literal. Parameters: items */
+    LIST_LITERAL("ListLiteral"),
 
     /** Method call. Parameters: target, arguments */
-    METHOD_CALL("MethodCall", "target", "arguments"),
+    METHOD_CALL("MethodCall"),
 
     /** Not expression. Parameter: target expression. */
-    NOT("NotExpression", "target"),
+    NOT("NotExpression"),
 
     /** Number literal. Implements LiteralExpr interface */
     NUMBER_LITERAL("NumberLiteral"),
 
     /** Or expression. Parameters: left, right operands.*/
-    OR("OrExpression", l("lho", "rho"), l("left", "right")),
+    OR("OrExpression"),
 
     /** Parenthetical expression. Parameter: nested expression */
-    PARENTHETICAL("ParentheticalExpression", "nested"),
+    PARENTHETICAL("ParentheticalExpression"),
 
     /** Range. Parameters: left, right operands */
-    RANGE("Range", l("lho", "rho"), l("left", "right")),
+    RANGE("Range"),
 
     /** String literal. Implements StringExpr interface. */
     STRING_LITERAL("StringLiteral"),
 
-    /** Unary plus/minus expression */
+    /** Unary plus/minus expression. Parameters: target expression */
     UNARY_PLUS_MINUS("UnaryPlusMinusExpression"),
 
     /** 
@@ -87,32 +84,12 @@ public enum ExprType {
     GENERIC("");
 
     private String className;
-    private List<String> subExprFields; // FM 2.3.20
-    private List<String> altExprFields; // FM 2.3.19
 
-    private ExprType(String className, String... exprFields) {
-        this(className, l(exprFields), null);
-    }
-
-    private ExprType(String className, List<String> exprFields, List<String> altFields) {
+    private ExprType(String className) {
         this.className = className;
-        this.subExprFields = exprFields;
-        this.altExprFields = altFields;
     }
 
     public String getClassName() {
         return this.className;
-    }
-
-    List<String> getSubExprFields() {
-        return this.subExprFields;
-    }
-
-    List<String> getAltExprFields() {
-        return this.altExprFields;
-    }
-
-    private static List<String> l(String... fields) {
-        return Arrays.asList(fields);
     }
 }

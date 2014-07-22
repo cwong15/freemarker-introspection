@@ -1,6 +1,7 @@
 package freemarker.introspection;
 
 import static freemarker.introspection.TemplateTestUtils.assertIdentifier;
+import static freemarker.introspection.TemplateTestUtils.assertNumberExpr;
 import static freemarker.introspection.TemplateTestUtils.assertStringExpr;
 import static freemarker.introspection.TemplateTestUtils.assertValue;
 import static freemarker.introspection.TemplateTestUtils.loadTemplateRoot;
@@ -294,5 +295,34 @@ public class DirectiveParamsTests {
         assertIdentifier(root, 0, "foo");
         assertValue(root, 1, 2);
         assertValue(root, 2, 5);
+    }
+
+    @Test
+    public void testTransform() {
+        Element root = loadTemplateRoot(
+                "[#transform foo param1=1 param2=bar][/#transform]");
+        assertEquals(ElementType.TRANSFORM_BLOCK, root.getType());
+        assertEquals(5, root.getParams().size());
+        assertIdentifier(root, 0, "foo");
+        assertValue(root, 1, "param1");
+        assertNumberExpr(root, 2, 1);
+        assertValue(root, 3, "param2");
+        assertIdentifier(root, 4, "bar");
+    }
+
+    @Test
+    public void testTextBlock() {
+        Element root = loadTemplateRoot("foo");
+        assertEquals(ElementType.TEXT_BLOCK, root.getType());
+        assertEquals(1, root.getParams().size());
+        assertValue(root, 0, "foo");
+    }
+
+    @Test
+    public void testComment() {
+        Element root = loadTemplateRoot("[#--foo--]");
+        assertEquals(ElementType.COMMENT, root.getType());
+        assertEquals(1, root.getParams().size());
+        assertValue(root, 0, "foo");
     }
 }
