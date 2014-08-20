@@ -7,12 +7,12 @@ import java.util.List;
 import freemarker.core.TemplateElement;
 
 public class BaseElement implements Element {
-    private TemplateElement node;
+    TemplateElement node;
     private ElementType type;
 
     // populated lazily as needed
     private List<Element> children = null;
-    private List<Expr> params = null;
+    List<Expr> params = null;
 
     public BaseElement(ElementType type, TemplateElement node) {
         this.type = type;

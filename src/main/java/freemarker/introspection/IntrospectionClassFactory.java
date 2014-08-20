@@ -4,6 +4,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.reflect.FieldUtils;
 
@@ -14,7 +15,9 @@ import freemarker.core.TemplateObject;
 
 class IntrospectionClassFactory {
     public static Element getIntrospectionElement(TemplateElement node) {
-        return new BaseElement(ElementClassifier.getType(node), node);
+        ElementType etype = ElementClassifier.getType(node);
+        return etype == ElementType.UNIFIED_CALL ?
+                new UnifiedCallElement(node) : new BaseElement(etype, node);
     }
 
     public static List<Expr> getParams(TemplateObject obj, List<String> fields,
@@ -54,27 +57,31 @@ class IntrospectionClassFactory {
             if (p instanceof Expression) {
                 // wrap Expression objects as our public Expr
                 Expression fmExpr = (Expression) p;
-                ExprType exprType = ExprClassifier.getType(fmExpr);
-                Expr expr = null;
-                switch (exprType) {
-                    case STRING_LITERAL:
-                        expr = new StringLiteralExpr(fmExpr);
-                        break;
-                    case NUMBER_LITERAL:
-                        expr = new NumberLiteralExpr(fmExpr);
-                        break;
-                    case BOOLEAN_LITERAL:
-                        expr = new BooleanLiteralExpr(fmExpr);
-                        break;
-                    default:
-                        expr = new BaseExpr(exprType, fmExpr);
-                }
-                params.add(expr);
+                params.add(wrapExpression(fmExpr));
             } else if (p != null) {
                 appendObjectExprs(params, obj, p);
             }
         }
         return params;
+    }
+
+    private static Expr wrapExpression(Expression fmExpr) {
+        ExprType exprType = ExprClassifier.getType(fmExpr);
+        Expr expr = null;
+        switch (exprType) {
+            case STRING_LITERAL:
+                expr = new StringLiteralExpr(fmExpr);
+                break;
+            case NUMBER_LITERAL:
+                expr = new NumberLiteralExpr(fmExpr);
+                break;
+            case BOOLEAN_LITERAL:
+                expr = new BooleanLiteralExpr(fmExpr);
+                break;
+            default:
+                expr = new BaseExpr(exprType, fmExpr);
+        }
+        return expr;
     }
 
     private static void appendObjectExprs(List<Expr> params, TemplateObject node,
@@ -84,6 +91,14 @@ class IntrospectionClassFactory {
             int arrayLength = Array.getLength(value);
             for (int i = 0; i < arrayLength; i++) {
                 params.add(new ObjectExpr(ExprType.VALUE, node, Array.get(value, i)));
+            }
+        } else if (value instanceof Map) {
+            // unpack key/value arg map into a list, alternating key and value.
+            @SuppressWarnings("unchecked")
+            Map<String, Expression> m = (Map<String, Expression>) value;
+            for (Map.Entry<String, Expression> entry : m.entrySet()) {
+                params.add(new ObjectExpr(ExprType.VALUE, node, entry.getKey()));
+                params.add(wrapExpression(entry.getValue()));
             }
         } else {
             params.add(new ObjectExpr(ExprType.VALUE, node, value));
