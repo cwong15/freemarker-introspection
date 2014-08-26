@@ -247,6 +247,11 @@ public class VariableFinder implements ElementVisitor, ExprVisitor {
                 !shadowedVariables.contains(target.toString())) {
             recordVariable(dotExpr, typeStack.isEmpty() ?
                     VariableType.UNKNOWN : typeStack.peekFirst());
+        } else {
+            // target is not an identifier. Scan it further for variables. It
+            // could be something like datevar?string.short, so we don't want to
+            // skip the "datevar?string" part. 
+            target.accept(this);
         }
     }
 

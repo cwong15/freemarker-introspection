@@ -15,4 +15,7 @@ Example of dot variable reference: ${this.thing?lower_case!'default_txt'}
 
 [#if 0 < somevar && somevar < 10]
     Something.
-[/#if]            
+[/#if]
+
+Now for something complicated:
+${((APR7MAILINGLIST_OJC_964.LastShoppingDate!'2013-12-04 12:30:45')?date("yyyy-MM-dd HH:mm:ss"))?string.short}            
