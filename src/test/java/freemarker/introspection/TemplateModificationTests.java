@@ -24,6 +24,7 @@ import freemarker.template.Template;
 
 public class TemplateModificationTests {
     private static String TEMPLATE_FILE = "templateWithVariables.ftl";
+    private static String TEMPLATE_FILE2 = "varRenameWithTabs.ftl";
 
     private Configuration templateConfig;
     private Template template;
@@ -31,14 +32,18 @@ public class TemplateModificationTests {
 
     @Before
     public void setup() throws IOException, URISyntaxException {
+        loadTemplate(TEMPLATE_FILE);
+    }
+
+    private void loadTemplate(String templateFile) throws IOException, URISyntaxException {
         templateText = FileUtils.readFileToString(new File(this.getClass()
-                .getResource(TEMPLATE_FILE).toURI()));
+                .getResource(templateFile).toURI()));
 
         StringTemplateLoader tloader = new StringTemplateLoader();
-        tloader.putTemplate(TEMPLATE_FILE, templateText);
+        tloader.putTemplate(templateFile, templateText);
         templateConfig = new Configuration();
         templateConfig.setTemplateLoader(tloader);
-        template = templateConfig.getTemplate(TEMPLATE_FILE);
+        template = templateConfig.getTemplate(templateFile);
     }
 
     @Test
@@ -116,6 +121,32 @@ public class TemplateModificationTests {
         assertFalse(newTemplate.contains(origText));
         assertFalse(templateText.contains(updatedText));
         assertTrue(newTemplate.contains(updatedText));
+    }
+
+    @Test
+    public void testRenameWithTabs() throws IOException, URISyntaxException {
+        loadTemplate(TEMPLATE_FILE2);
+
+        List<VariableInfo> results = new VariableFinder(
+                TemplateIntrospector.getRootNode(template))
+                .seek()
+                .getVariableInfo();
+
+        TemplateEditor editor = new TemplateEditor(templateText);
+        for (VariableInfo vi : results) {
+            if (vi.getName().equals("somevariable")) {
+                for (Expr var : vi.getVariables()) {
+                    editor.replace(var, "othervariable");
+                }
+            }
+        }
+
+        String modifiedTemplate = editor.apply().getModifiedTemplate();
+        StringTemplateLoader tloader = new StringTemplateLoader();
+        tloader.putTemplate("t", modifiedTemplate);
+        templateConfig = new Configuration();
+        templateConfig.setTemplateLoader(tloader);
+        template = templateConfig.getTemplate("t");
     }
 
     /**

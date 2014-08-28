@@ -170,7 +170,7 @@ public class TemplateEditor {
         for (int curCol = 1; curCol < col; curCol++) {
             if (templateText.charAt(curLoc) == '\t') {
                 // encountered tab character. Bump col counter to next tab stop
-                while (curCol < 8 && curCol % 8 != 0) {
+                while (curCol < 8 || curCol % 8 != 0) {
                     curCol++;
                 }
             }
