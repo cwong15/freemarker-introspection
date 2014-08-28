@@ -165,7 +165,18 @@ public class TemplateEditor {
     }
 
     private int getLoc(int line, int col) {
-        return lines.get(line - 1) + (col - 1);
+        int curLoc = lines.get(line - 1);
+        // scan current line, counting col#, treating tabs as 8 char stops
+        for (int curCol = 1; curCol < col; curCol++) {
+            if (templateText.charAt(curLoc) == '\t') {
+                // encountered tab character. Bump col counter to next tab stop
+                while (curCol < 8 && curCol % 8 != 0) {
+                    curCol++;
+                }
+            }
+            curLoc++;
+        }
+        return curLoc;
     }
 
     private static class Substitution
