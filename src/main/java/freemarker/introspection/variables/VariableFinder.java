@@ -231,6 +231,16 @@ public class VariableFinder implements ElementVisitor, ExprVisitor {
                 scanParams(expr);
                 typeStack.removeFirst();
                 break;
+            case EXISTS:
+                typeStack.addFirst(VariableType.UNKNOWN);
+                scanParams(expr);
+                typeStack.removeFirst();
+                break;
+            case BUILTIN:
+                typeStack.addFirst(BuiltinTypeCategorizer.inferType(expr));
+                scanParams(expr);
+                typeStack.removeFirst();
+                break;
             default:
                 scanParams(expr);
         }

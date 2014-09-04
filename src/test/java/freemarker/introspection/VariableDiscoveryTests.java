@@ -45,7 +45,7 @@ public class VariableDiscoveryTests {
         Element root = TemplateIntrospector.getRootNode(template);
 
         List<VariableInfo> vars = new VariableFinder(root).seek().getVariableInfo();
-        assertEquals(22, vars.size());
+        assertEquals(86, vars.size());
         for (VariableInfo vi : vars) {
             if (vi.getName().startsWith("num")) {
                 assertEquals(vi.getName() + " should be numeric",

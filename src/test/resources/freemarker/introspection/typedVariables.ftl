@@ -64,5 +64,38 @@ ${strvar6!''} ... no longer shadowed
 <#list numVar7..numVar8 as x7>
 	<#assign numvar9 = numvar9 + 1>
 	<#assign x6 = '${unknownvar7}'>
-</#list>	
+</#list>
 
+<#if unknownvar8?? || unknownvar9?has_content>
+</#if>
+
+Numeric builtins:
+${numvar10?floor} should be ?abs, but not supported in older FM version 
+${numvar11?floor} should be ?is_infinite, but not supported in older FM version 
+${numvar12?floor} should be ?is_nan, but not supported in older FM version 
+${numvar13?round} ${numvar14?floor} ${numvar15?ceiling}
+
+Date builtins:
+${datevar1?iso_utc} ${datevar2?iso_utc_nz} ${datevar3?iso_utc_ms}
+${datevar4?iso_utc_ms_nz} ${datevar5?iso_utc_m} ${datevar6?iso_utc_m_nz}
+${datevar7?iso_utc_h} ${datevar8?iso_utc_h_nz} ${datevar9?iso_local}
+${datevar10?iso_local_nz} ${datevar11?iso_local_ms} ${datevar12?iso_local_ms_nz}
+${datevar13?iso_local_m} ${datevar14?iso_local_m_nz} ${datevar15?iso_local_h}
+${datevar16?iso_local_h_nz} ${datevar17?iso} ${datevar18?iso_nz} 
+${datevar19?iso_ms} ${datevar20?iso_ms_nz} ${datevar21?iso_m}
+${datevar22?iso_m_nz} ${datevar23?iso_h} ${datevar24?iso_h_nz}
+
+String builtins:
+${strvar7?substring(0)} ${strvar8?cap_first} ${strvar9?uncap_first}
+${strvar10?capitalize} ${strvar11?chop_linebreak} ${strvar12?ends_with('x')}
+${strvar13?html} ${strvar14?groups[0]} ${strvar15?index_of('x')}
+${strvar16?j_string} ${strvar17?js_string} ${strvar18?json_string}
+${strvar19?last_index_of('x')} ${strvar20?length} ${strvar21?lower_case}
+${strvar22?left_pad(9)} ${strvar23?right_pad} ${strvar24?contains('x')}
+${strvar25?matches('foo*')} ${strvar26?number} ${strvar27?replace('x', 'y')}
+${strvar28?rtf} ${strvar29?url} ${strvar30?split('x')} ${strvar31?starts_with('x')}
+${strvar32?trim} ${strvar33?upper_case} ${strvar34?word_list} ${strvar35?xhtml}
+${strvar36?xml}
+
+Unknown builtins:
+${unknownvar10?has_content} ${unknownvar11?is_boolean} 
