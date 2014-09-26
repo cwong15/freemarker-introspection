@@ -201,7 +201,7 @@ public class VariableFinder implements ElementVisitor, ExprVisitor {
         for (int i = 2; i < params.size(); i += 2) {
             Expr paramVal = params.get(i);
             if (paramVal != null) {
-                params.get(i).accept(this);
+                paramVal.accept(this);
             }
         }
     }
