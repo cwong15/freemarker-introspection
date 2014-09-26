@@ -199,7 +199,10 @@ public class VariableFinder implements ElementVisitor, ExprVisitor {
         // scan the RHS of each param=value pair. First param is call name, so
         // start at 3rd param.
         for (int i = 2; i < params.size(); i += 2) {
-            params.get(i).accept(this);
+            Expr paramVal = params.get(i);
+            if (paramVal != null) {
+                params.get(i).accept(this);
+            }
         }
     }
 
