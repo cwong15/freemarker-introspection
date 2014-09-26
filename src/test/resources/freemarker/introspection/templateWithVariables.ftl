@@ -21,4 +21,6 @@ An 	example of simple variable reference: ${thing?upper_case?trim}
 [/#if]
 
 Now for something complicated:
-${((APR7MAILINGLIST_OJC_964.LastShoppingDate!'2013-12-04 12:30:45')?date("yyyy-MM-dd HH:mm:ss"))?string.short}            
+${((APR7MAILINGLIST_OJC_964.LastShoppingDate!'2013-12-04 12:30:45')?date("yyyy-MM-dd HH:mm:ss"))?string.short}
+
+[@mymacro foo="${var1inarg}" bar=var2inarg]${varinelement}[/@mymacro]            

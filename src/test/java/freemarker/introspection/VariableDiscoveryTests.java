@@ -32,7 +32,8 @@ public class VariableDiscoveryTests {
         Template template = config.getTemplate("templateWithVariables.ftl");
         Set<String> expectedVariables = new LinkedHashSet<String>(
                 Arrays.asList("foo", "bar", "thing", "this.thing", "somevar",
-                        "APR7MAILINGLIST_OJC_964.LastShoppingDate"));
+                        "APR7MAILINGLIST_OJC_964.LastShoppingDate",
+                        "var1inarg", "var2inarg", "varinelement"));
 
         Element root = TemplateIntrospector.getRootNode(template);
         Set<String> variables = new VariableFinder(root).seek().getVariables();

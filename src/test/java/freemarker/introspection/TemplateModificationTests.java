@@ -1,5 +1,6 @@
 package freemarker.introspection;
 
+import static freemarker.introspection.TemplateTestUtils.loadTemplateRoot;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -147,6 +148,28 @@ public class TemplateModificationTests {
         templateConfig = new Configuration();
         templateConfig.setTemplateLoader(tloader);
         template = templateConfig.getTemplate("t");
+    }
+
+    @Test
+    public void testRenameInUnifiedCall() {
+        String text = "[@foo arg1='${var1.orig}' arg2=var2.orig]${var1.orig}[/@foo]";
+        String expected = "[@foo arg1='${var1.new}' arg2=var2.new]${var1.new}[/@foo]";
+
+        List<VariableInfo> vars = new VariableFinder(loadTemplateRoot(text))
+                .seek()
+                .getVariableInfo();
+
+        TemplateEditor editor = new TemplateEditor(text);
+        for (VariableInfo vi : vars) {
+            String newName = vi.getName().replace("orig", "new");
+            for (Expr var : vi.getVariables()) {
+                editor.replace(var, newName);
+            }
+        }
+
+        String updated = editor.apply().getModifiedTemplate();
+        assertEquals(expected, updated);
+        loadTemplateRoot(updated); // check that it parses
     }
 
     /**

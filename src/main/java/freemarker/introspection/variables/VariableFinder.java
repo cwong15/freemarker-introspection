@@ -107,7 +107,8 @@ public class VariableFinder implements ElementVisitor, ExprVisitor {
                 processNewScope(element, macroArgs);
                 return false;
             case UNIFIED_CALL:
-                break; // skip params to avoid call identifier
+                scanUnifiedCallParams(element);
+                break;
             default:
                 scanParams(element);
                 break;
@@ -190,6 +191,15 @@ public class VariableFinder implements ElementVisitor, ExprVisitor {
             if (e != null) {
                 e.accept(this);
             }
+        }
+    }
+
+    private void scanUnifiedCallParams(TemplateNode unifiedCall) {
+        List<Expr> params = unifiedCall.getParams();
+        // scan the RHS of each param=value pair. First param is call name, so
+        // start at 3rd param.
+        for (int i = 2; i < params.size(); i += 2) {
+            params.get(i).accept(this);
         }
     }
 
