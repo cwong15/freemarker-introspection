@@ -45,7 +45,10 @@ ${unknownvar2 + unknownvar3}
 ${x5} ... shadowed from assignment in list above
 
 <#list [4,5,6] as unknownvar4>
+	All of these variables should be shadowed and not picked up
 	${unknownvar4!123}
+	${unknownvar4.foo}
+	${unknownvar4.foo.bar}
 </#list>
 ${unknownvar4} ... not shadowed from assignment in list above
 

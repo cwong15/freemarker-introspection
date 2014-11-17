@@ -349,9 +349,9 @@ public class VariableFinder implements ElementVisitor, ExprVisitor {
         // check the namespace variable scope and then walk the scope chain to
         // see if this variable is shadowed.
         String variableName = variable.toString();
-        boolean shadowed = shadowedVariables.contains(variableName);
+        boolean shadowed = isShadowed(shadowedVariables, variableName);
         for (Set<String> scope : scopeStack) {
-            shadowed = shadowed || scope.contains(variableName);
+            shadowed = shadowed || isShadowed(scope, variableName);
         }
 
         if (!shadowed) {
@@ -369,5 +369,21 @@ public class VariableFinder implements ElementVisitor, ExprVisitor {
         } else {
             return null;
         }
+    }
+
+    private boolean isShadowed(Set<String> shadowedNames, String varName) {
+        if (shadowedNames.contains(varName)) {
+            // direct match
+            return true;
+        }
+
+        // check if there is a dotted access. That is, a variable "foo.bar" is
+        // considered shadowed by "foo".
+        for (String shadowedVar : shadowedNames) {
+            if (varName.startsWith(shadowedVar + '.')) {
+                return true;
+            }
+        }
+        return false;
     }
 }
