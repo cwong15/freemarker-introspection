@@ -24,6 +24,6 @@ public class UnifiedCallElement extends BaseElement {
 
     private void buildParameterList() {
         params = IntrospectionClassFactory.getParams(node,
-                Arrays.asList("nameExp", "namedArgs"), null);
+                Arrays.asList(Arrays.asList("nameExp", "namedArgs")));
     }
 }

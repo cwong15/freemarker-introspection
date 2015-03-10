@@ -77,19 +77,25 @@ public enum ElementType {
     /**
      * Represents an include. Parameters: template name, parse, encoding.
      */
-    INCLUDE("Include", l("templateName", "parse", "encoding"),
-            l("includedTemplateName", "parse", "encoding")),
+    INCLUDE("Include",
+            l("templateName", "parse", "encoding"),
+            l("includedTemplateName", "parse", "encoding"),
+            l("includedTemplateNameExp", "parse", "encoding")),
 
     /**
      * Iterator block. Parameters: list source, loop variable name
      */
-    ITERATOR_BLOCK("IteratorBlock", l("listSource", "loopVariableName"),
-            l("listExpression", "indexName")),
+    ITERATOR_BLOCK("IteratorBlock",
+            l("listSource", "loopVariableName"),
+            l("listExpression", "indexName"),
+            l("listExpression", "loopVariableName")),
 
     /**
      * Library load. Parameters: template name, namespace.
      */
-    LIBRARY_LOAD("LibraryLoad", "templateName", "namespace"),
+    LIBRARY_LOAD("LibraryLoad",
+            l("templateName", "namespace"),
+            l("importedTemplateNameExp", "namespace")),
 
     /** Macro. Parameters: name, parameter names... */
     MACRO("Macro", l("name", "paramNames"), l("name", "argumentNames")),
@@ -140,33 +146,38 @@ public enum ElementType {
     GENERIC("");
 
     private String className;
-    private List<String> paramFields;
-    private List<String> altParamFields;
+    private List<List<String>> paramFields;
+
+    private ElementType(String className) {
+        this(className, l());
+    }
 
     private ElementType(String className, String... paramFields) {
-        this(className, l(paramFields), null);
+        this(className, l(l(paramFields)));
     }
 
-    private ElementType(String className, List<String> paramProps,
-            List<String> altParamProps) {
+    private ElementType(String className, List<String>... paramProps) {
+        this(className, l(paramProps));
+    }
+
+    private ElementType(String className, List<List<String>> paramProps) {
         this.className = className;
         this.paramFields = paramProps;
-        this.altParamFields = altParamProps;
     }
 
-    String getClassName() {
+    public String getClassName() {
         return this.className;
     }
 
-    List<String> getParamFields() {
+    public List<List<String>> getParamFields() {
         return this.paramFields;
     }
 
-    List<String> getAltParamFields() {
-        return this.altParamFields;
+    private static List<String> l() {
+        return Arrays.asList();
     }
 
-    private static List<String> l(String... fields) {
+    private static <T> List<T> l(T... fields) {
         return Arrays.asList(fields);
     }
 }

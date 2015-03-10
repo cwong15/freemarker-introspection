@@ -42,7 +42,7 @@ public class BaseElement implements Element {
     public List<Expr> getParams() {
         if (params == null) {
             params = IntrospectionClassFactory.getParams(node,
-                    type.getParamFields(), type.getAltParamFields());
+                    type.getParamFields());
         }
         return params;
     }

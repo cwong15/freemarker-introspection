@@ -14,29 +14,28 @@ import freemarker.core.TemplateElement;
 import freemarker.core.TemplateObject;
 
 class IntrospectionClassFactory {
+
     public static Element getIntrospectionElement(TemplateElement node) {
         ElementType etype = ElementClassifier.getType(node);
         return etype == ElementType.UNIFIED_CALL ?
                 new UnifiedCallElement(node) : new BaseElement(etype, node);
     }
 
-    public static List<Expr> getParams(TemplateObject obj, List<String> fields,
-            List<String> altFields) {
-        if (fields.isEmpty()) {
+    public static List<Expr> getParams(TemplateObject obj, List<List<String>> fieldsList) {
+        if (fieldsList.isEmpty()) {
             return Collections.emptyList();
         }
 
         List<Expr> params = null;
-        try {
-            params = tryProps(obj, fields);
-        } catch (InaccessibleFieldException e) {
-            // error accessing a field. This can be due to the fact that FM 
-            // internal field names can change across versions. Try the 
-            // alternate set of field names, if available.
-            if (altFields != null) {
-                params = tryProps(obj, altFields);
-            } else {
-                throw e;
+        for (int i = 0; i < fieldsList.size(); i++) {
+            List<String> fields = fieldsList.get(i);
+            try {
+                params = tryProps(obj, fields);
+                break;
+            } catch (InaccessibleFieldException e) {
+                if (i == fieldsList.size() - 1) {
+                    throw e;
+                }
             }
         }
 

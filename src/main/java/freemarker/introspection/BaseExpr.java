@@ -23,7 +23,7 @@ class BaseExpr implements Expr {
     public List<Expr> getParams() {
         if (params == null) {
             params = IntrospectionClassFactory.getParams(expr,
-                    type.getSubExprFields(), type.getAltExprFields());
+                    type.getExprFields());
         }
         return params;
     }
