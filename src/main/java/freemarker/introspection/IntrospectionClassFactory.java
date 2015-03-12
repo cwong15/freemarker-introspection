@@ -14,9 +14,7 @@ import freemarker.core.TemplateObject;
 
 class IntrospectionClassFactory {
     public static Element getIntrospectionElement(TemplateElement node) {
-        ElementType etype = ElementClassifier.getType(node);
-        return etype == ElementType.UNIFIED_CALL ?
-                new UnifiedCallElement(node) : new BaseElement(etype, node);
+        return new BaseElement(ElementClassifier.getType(node), node);
     }
 
     public static List<Expr> getParams(TemplateObject obj) {
