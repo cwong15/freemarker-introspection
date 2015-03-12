@@ -6,10 +6,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.reflect.FieldUtils;
-
 import freemarker.core.ExprClassifier;
 import freemarker.core.Expression;
+import freemarker.core.IntrospectionAccessor;
 import freemarker.core.TemplateElement;
 import freemarker.core.TemplateObject;
 
@@ -20,46 +19,20 @@ class IntrospectionClassFactory {
                 new UnifiedCallElement(node) : new BaseElement(etype, node);
     }
 
-    public static List<Expr> getParams(TemplateObject obj, List<String> fields,
-            List<String> altFields) {
-        if (fields.isEmpty()) {
+    public static List<Expr> getParams(TemplateObject obj) {
+        List<Object> paramObjs = IntrospectionAccessor.getParamValues(obj);
+        if (paramObjs.isEmpty()) {
             return Collections.emptyList();
         }
 
-        List<Expr> params = null;
-        try {
-            params = tryProps(obj, fields);
-        } catch (InaccessibleFieldException e) {
-            // error accessing a field. This can be due to the fact that FM 
-            // internal field names can change across versions. Try the 
-            // alternate set of field names, if available.
-            if (altFields != null) {
-                params = tryProps(obj, altFields);
-            } else {
-                throw e;
-            }
-        }
-
-        return Collections.unmodifiableList(params);
-    }
-
-    private static List<Expr> tryProps(TemplateObject obj, List<String> fields) {
-        List<Expr> params = new ArrayList<Expr>();
-        for (String field : fields) {
-            Object p;
-            try {
-                p = (Object) FieldUtils.readField(obj, field, true);
-            } catch (IllegalAccessException iae) {
-                throw new InaccessibleFieldException(field, iae);
-            } catch (IllegalArgumentException iae) {
-                throw new InaccessibleFieldException(field, iae);
-            }
-            if (p instanceof Expression) {
+        List<Expr> params = new ArrayList<Expr>(paramObjs.size());
+        for (Object paramObj : paramObjs) {
+            if (paramObj instanceof Expression) {
                 // wrap Expression objects as our public Expr
-                Expression fmExpr = (Expression) p;
+                Expression fmExpr = (Expression) paramObj;
                 params.add(wrapExpression(fmExpr));
-            } else if (p != null) {
-                appendObjectExprs(params, obj, p);
+            } else if (paramObj != null) {
+                appendObjectExprs(params, obj, paramObj);
             }
         }
         return params;

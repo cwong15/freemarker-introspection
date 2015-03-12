@@ -100,11 +100,14 @@ public class VariableFinder implements ElementVisitor, ExprVisitor {
                 processNewScope(element, element.getParams().get(1));
                 return false;
             case MACRO:
-                Expr[] macroArgs = new Expr[element.getParams().size() - 1];
-                for (int i = 0; i < macroArgs.length; i++) {
-                    macroArgs[i] = element.getParams().get(i + 1);
+                List<Expr> vars = new ArrayList<Expr>();
+                for (Expr p : element.getParams()) {
+                    if (p.getType() == ExprType.VALUE &&
+                            ((ValueExpr) p).getValue() instanceof String) {
+                        vars.add(p);
+                    }
                 }
-                processNewScope(element, macroArgs);
+                processNewScope(element, vars.toArray(new Expr[vars.size()]));
                 return false;
             case UNIFIED_CALL:
                 scanUnifiedCallParams(element);
