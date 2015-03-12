@@ -31,9 +31,16 @@ public class TemplateTestUtils {
     }
 
     public static void assertValue(TemplateNode node, int paramIdx, Object expectedValue) {
+        // a value may be a literal expression or a value expression. We'll accept both kinds. 
         Expr valueExpr = node.getParams().get(paramIdx);
-        assertEquals(ExprType.VALUE, valueExpr.getType());
-        assertEquals(expectedValue, ((ObjectExpr) valueExpr).getValue());
+        Object value = null;
+        if (valueExpr instanceof ValueExpr)
+            value = ((ValueExpr) valueExpr).getValue();
+        else if (valueExpr instanceof LiteralExpr)
+            value = ((LiteralExpr) valueExpr).getValue();
+        else
+            value = valueExpr.toString();
+        assertEquals(expectedValue, value);
     }
 
     public static void assertStringExpr(TemplateNode node, int paramIdx, String expectedValue) {
