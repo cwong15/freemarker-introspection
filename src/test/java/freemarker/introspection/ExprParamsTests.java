@@ -181,9 +181,15 @@ public class ExprParamsTests {
         assertEquals(ExprType.STRING_LITERAL, expr.getType());
         Element dynValue = ((StringLiteralExpr) expr).getDynamicValue();
         assertNotNull(dynValue);
-        assertEquals(ElementType.MIXED_CONTENT, dynValue.getType());
-        assertEquals(1, dynValue.getChildren().size());
-        dynValue = dynValue.getChildren().get(0);
+
+        // the AST got simplified in FM 2.3.24. In many cases, there 
+        // is no longer any MixedContent node between the real parent and
+        // children. 
+        if (dynValue.getType() == ElementType.MIXED_CONTENT) {
+            // older FM model. Bypass MixedContent layer and get real child.
+            assertEquals(1, dynValue.getChildren().size());
+            dynValue = dynValue.getChildren().get(0);
+        }
         assertEquals(ElementType.DOLLAR_VARIABLE, dynValue.getType());
         assertEquals(1, dynValue.getParams().size());
         assertIdentifier(dynValue, 0, "foo");

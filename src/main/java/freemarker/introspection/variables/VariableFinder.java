@@ -17,6 +17,7 @@ import freemarker.introspection.Expr;
 import freemarker.introspection.ExprType;
 import freemarker.introspection.ExprVisitor;
 import freemarker.introspection.LiteralExpr;
+import freemarker.introspection.ParamRole;
 import freemarker.introspection.StringExpr;
 import freemarker.introspection.TemplateNode;
 import freemarker.introspection.ValueExpr;
@@ -140,9 +141,8 @@ public class VariableFinder implements ElementVisitor, ExprVisitor {
             params.get(i).accept(this);
         }
 
-        int scopeIdx = element.getType() == ElementType.BLOCK_ASSIGNMENT ? 1 : 2;
-        int scope = (Integer) ((ValueExpr) element.getParams().get(scopeIdx)).getValue();
-        String varName = params.get(0).toString();
+        int scope = (Integer) ((ValueExpr) element.paramByRole(ParamRole.VARIABLE_SCOPE)).getValue();
+        String varName = element.paramByRole(ParamRole.ASSIGNMENT_TARGET).toString();
 
         switch (scope) {
             case VarScope.GLOBAL:
@@ -215,8 +215,7 @@ public class VariableFinder implements ElementVisitor, ExprVisitor {
                 processDotExpression(expr);
                 break;
             case IDENTIFIER:
-                recordVariable(expr, typeStack.isEmpty() ?
-                        VariableType.UNKNOWN : typeStack.peekFirst());
+                recordVariable(expr, typeStack.isEmpty() ? VariableType.UNKNOWN : typeStack.peekFirst());
                 break;
             case ADD_CONCAT:
             case ARITHMETIC:
@@ -271,8 +270,7 @@ public class VariableFinder implements ElementVisitor, ExprVisitor {
         }
         if (target.getType() == ExprType.IDENTIFIER &&
                 !shadowedVariables.contains(target.toString())) {
-            recordVariable(dotExpr, typeStack.isEmpty() ?
-                    VariableType.UNKNOWN : typeStack.peekFirst());
+            recordVariable(dotExpr, typeStack.isEmpty() ? VariableType.UNKNOWN : typeStack.peekFirst());
         } else {
             // target is not an identifier. Scan it further for variables. It
             // could be something like datevar?string.short, so we don't want to

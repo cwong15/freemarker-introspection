@@ -1,10 +1,12 @@
 package freemarker.introspection;
 
-import freemarker.core.Expression;
+import freemarker.core.Param;
+import freemarker.core.ParamRoleConverter;
 
 class BooleanLiteralExpr extends BaseExpr implements LiteralExpr {
-    BooleanLiteralExpr(Expression expr) {
-        super(ExprType.BOOLEAN_LITERAL, expr);
+    BooleanLiteralExpr(Param exprParam) {
+        super(ExprType.BOOLEAN_LITERAL, ParamRoleConverter.toRole(exprParam.getRole()),
+                exprParam.asExpression());
     }
 
     public Object getValue() {

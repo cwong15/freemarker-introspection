@@ -46,6 +46,15 @@ public class BaseElement implements Element {
         return params;
     }
 
+    public Expr paramByRole(ParamRole role) {
+        for (Expr e : getParams()) {
+            if (e.getRole() == role) {
+                return e;
+            }
+        }
+        return null;
+    }
+
     public ElementType getType() {
         return type;
     }

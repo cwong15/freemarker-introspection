@@ -23,4 +23,12 @@ public interface TemplateNode {
      * parameters depends on the type of the node.
      */
     List<Expr> getParams();
+
+    /**
+     * Returns the first parameter expression with the given role. Returns
+     * null if no matching parameter is found.
+     * 
+     * @param role role of parameter to match on
+     */
+    Expr paramByRole(ParamRole role);
 }

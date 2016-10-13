@@ -17,15 +17,15 @@ public class IntrospectionAccessor {
         return ((NumberLiteral) expr).getAsNumber();
     }
 
-    public static List<Object> getParamValues(TemplateObject obj) {
+    public static List<Param> getParams(TemplateObject obj) {
         if (obj.getParameterCount() == 0) {
             return Collections.emptyList();
         }
 
-        List<Object> paramVals = new ArrayList<Object>(obj.getParameterCount());
+        List<Param> params = new ArrayList<Param>(obj.getParameterCount());
         for (int i = 0; i < obj.getParameterCount(); i++) {
-            paramVals.add(obj.getParameterValue(i));
+            params.add(new Param(obj.getParameterRole(i), obj.getParameterValue(i)));
         }
-        return paramVals;
+        return params;
     }
 }

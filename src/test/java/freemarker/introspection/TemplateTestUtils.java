@@ -30,9 +30,24 @@ public class TemplateTestUtils {
         assertEquals(name, identifier.toString());
     }
 
+    public static void assertIdentifier(TemplateNode node, ParamRole role, String name) {
+        Expr identifier = node.paramByRole(role);
+        assertEquals(ExprType.IDENTIFIER, identifier.getType());
+        assertEquals(name, identifier.toString());
+    }
+
     public static void assertValue(TemplateNode node, int paramIdx, Object expectedValue) {
         // a value may be a literal expression or a value expression. We'll accept both kinds. 
         Expr valueExpr = node.getParams().get(paramIdx);
+        assertExprValue(valueExpr, expectedValue);
+    }
+
+    public static void assertValue(TemplateNode node, ParamRole role, Object expectedValue) {
+        Expr valueExpr = node.paramByRole(role);
+        assertExprValue(valueExpr, expectedValue);
+    }
+
+    private static void assertExprValue(Expr valueExpr, Object expectedValue) {
         Object value = null;
         if (valueExpr instanceof ValueExpr)
             value = ((ValueExpr) valueExpr).getValue();
@@ -45,6 +60,12 @@ public class TemplateTestUtils {
 
     public static void assertStringExpr(TemplateNode node, int paramIdx, String expectedValue) {
         Expr strLiteral = node.getParams().get(paramIdx);
+        assertEquals(ExprType.STRING_LITERAL, strLiteral.getType());
+        assertEquals(expectedValue, ((StringExpr) strLiteral).getValue());
+    }
+
+    public static void assertStringExpr(TemplateNode node, ParamRole role, String expectedValue) {
+        Expr strLiteral = node.paramByRole(role);
         assertEquals(ExprType.STRING_LITERAL, strLiteral.getType());
         assertEquals(expectedValue, ((StringExpr) strLiteral).getValue());
     }

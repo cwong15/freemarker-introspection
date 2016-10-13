@@ -6,13 +6,15 @@ import freemarker.core.Expression;
 
 class BaseExpr implements Expr {
     private ExprType type;
+    private ParamRole role;
     Expression expr;
 
     // populated lazily as needed
     List<Expr> params = null;
 
-    BaseExpr(ExprType type, Expression expr) {
+    BaseExpr(ExprType type, ParamRole role, Expression expr) {
         this.type = type;
+        this.role = role;
         this.expr = expr;
     }
 
@@ -20,11 +22,24 @@ class BaseExpr implements Expr {
         return type;
     }
 
+    public ParamRole getRole() {
+        return role;
+    }
+
     public List<Expr> getParams() {
         if (params == null) {
             params = IntrospectionClassFactory.getParams(expr);
         }
         return params;
+    }
+
+    public Expr paramByRole(ParamRole role) {
+        for (Expr e : getParams()) {
+            if (e.getRole() == role) {
+                return e;
+            }
+        }
+        return null;
     }
 
     public int getBeginColumn() {

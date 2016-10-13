@@ -113,11 +113,10 @@ public class DirectiveParamsTests {
     public void testAssignmentDirectives() {
         Element root = loadTemplateRoot("[#assign foo = 'a' in n]");
         assertEquals(ElementType.ASSIGNMENT, root.getType());
-        assertEquals(4, root.getParams().size());
-        assertValue(root, 0, "foo");
-        assertStringExpr(root, 1, "a");
-        assertValue(root, 2, 1);
-        assertIdentifier(root, 3, "n");
+        assertValue(root, ParamRole.ASSIGNMENT_TARGET, "foo");
+        assertStringExpr(root, ParamRole.ASSIGNMENT_SOURCE, "a");
+        assertValue(root, ParamRole.VARIABLE_SCOPE, 1);
+        assertIdentifier(root, ParamRole.NAMESPACE, "n");
 
         root = loadTemplateRoot("[#assign foo=1 bar=2 in n]");
         assertEquals(ElementType.ASSIGNMENT_INSTRUCTION, root.getType());
@@ -142,10 +141,9 @@ public class DirectiveParamsTests {
     public void testGlobalDirectives() {
         Element root = loadTemplateRoot("[#global foo = 'a']");
         assertEquals(ElementType.ASSIGNMENT, root.getType());
-        assertEquals(3, root.getParams().size());
-        assertValue(root, 0, "foo");
-        assertStringExpr(root, 1, "a");
-        assertValue(root, 2, 3);
+        assertValue(root, ParamRole.ASSIGNMENT_TARGET, "foo");
+        assertStringExpr(root, ParamRole.ASSIGNMENT_SOURCE, "a");
+        assertValue(root, ParamRole.VARIABLE_SCOPE, 3);
 
         root = loadTemplateRoot("[#global foo=1 bar=2]");
         assertEquals(ElementType.ASSIGNMENT_INSTRUCTION, root.getType());
@@ -169,10 +167,9 @@ public class DirectiveParamsTests {
         Element root = loadTemplateRoot("[#macro m][#local foo = 'a'][/#macro]")
                 .getChildren().get(0);
         assertEquals(ElementType.ASSIGNMENT, root.getType());
-        assertEquals(3, root.getParams().size());
-        assertValue(root, 0, "foo");
-        assertStringExpr(root, 1, "a");
-        assertValue(root, 2, 2); // scope
+        assertValue(root, ParamRole.ASSIGNMENT_TARGET, "foo");
+        assertStringExpr(root, ParamRole.ASSIGNMENT_SOURCE, "a");
+        assertValue(root, ParamRole.VARIABLE_SCOPE, 2); // scope
 
         root = loadTemplateRoot("[#macro m][#local foo=1 bar=2][/#macro]")
                 .getChildren().get(0);
