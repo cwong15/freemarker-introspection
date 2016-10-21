@@ -13,7 +13,7 @@ public class TemplateTestUtils {
     public static Element loadTemplateRoot(String templateText) {
         StringTemplateLoader tloader = new StringTemplateLoader();
         tloader.putTemplate("template", templateText);
-        Configuration templateConfig = new Configuration();
+        Configuration templateConfig = templateConfig();
         templateConfig.setTagSyntax(Configuration.SQUARE_BRACKET_TAG_SYNTAX);
         templateConfig.setTemplateLoader(tloader);
         try {
@@ -22,6 +22,11 @@ public class TemplateTestUtils {
         } catch (IOException e) {
             throw new RuntimeException("Error loading template", e);
         }
+    }
+
+    public static Configuration templateConfig() {
+        Configuration templateConfig = new Configuration(Configuration.VERSION_2_3_25);
+        return templateConfig;
     }
 
     public static void assertIdentifier(TemplateNode node, int paramIdx, String name) {

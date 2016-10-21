@@ -18,6 +18,9 @@ public enum ElementType {
     /** Attempt block */
     ATTEMPT_BLOCK("AttemptBlock"),
 
+    /** Auto escape block */
+    AUTO_ESC_BLOCK("AutoEscBlock"),
+
     /**
      * Block assignment. Parameters: variable name, scope, namespace.
      */
@@ -76,6 +79,9 @@ public enum ElementType {
      */
     INCLUDE("Include"),
 
+    /** #items directive in a #list */
+    ITEMS("Items"),
+
     /**
      * Iterator block (#list). Parameters: list source, loop variable name
      */
@@ -86,17 +92,26 @@ public enum ElementType {
      */
     LIBRARY_LOAD("LibraryLoad"),
 
+    /** #else clause of a #list */
+    LIST_ELSE_CONTAINER("ListElseContainer"),
+
     /** Macro. Parameters: name, parameter names..., type (macro/function) */
     MACRO("Macro"),
 
     /** Mixed content. */
     MIXED_CONTENT("MixedContent"),
 
+    /** No auto escape block*/
+    NO_AUTO_ESC_BLOCK("NoAutoEscBlock"),
+
     /** No escape block */
     NO_ESCAPE_BLOCK("NoEscapeBlock"),
 
     /** Numerical output. Parameters: expression, min and max fractional digits */
     NUMERICAL_OUTPUT("NumericalOutput"),
+
+    /** #outputformat block */
+    OUTPUT_FORMAT_BLOCK("OutputFormatBlock"),
 
     /** Property setting. Parameters: key, value */
     PROPERTY_SETTING("PropertySetting"),
@@ -109,6 +124,11 @@ public enum ElementType {
 
     /** Return instruction. Parameter: expression, if any. */
     RETURN_INSTRUCTION("ReturnInstruction"),
+
+    /** 
+     * #sep block in a #list
+     */
+    SEP("Sep"),
 
     /** Stop instruction. Parameter: expression. */
     STOP_INSTRUCTION("StopInstruction"),

@@ -1,6 +1,6 @@
 [#ftl]
 
-[#-- contains all FM element and expression types --]
+[#-- contains all FM element and expression types, apart from autoescape stuff --]
 
 [#attempt]
    [#assign x=1 y=true]
@@ -32,6 +32,9 @@
    [#list 1..5 as i]
       ${i}
       [@dostuff 'param1'/]
+      [#sep],
+      [#else]
+      no items
    [/#list]
    [#visit 'node' + '2'/]
    [#recurse 'node'/]
@@ -44,9 +47,19 @@
    [/#transform]
 [/#if]
 
+[#list 6..9]
+   start
+   [#items as i]
+      item ${i}
+   [/#items]
+   end
+[/#list]
+
 [#function plus l r]
    [#return l + r]
 [/#function]
+
+[#outputformat 'XML']<text>This is XML</text>[/#outputformat]
 
 [#import 'foo.ftl' as namespace/]
 [#include 'oops.ftl']

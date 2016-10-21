@@ -1,6 +1,7 @@
 package freemarker.introspection;
 
 import static freemarker.introspection.TemplateTestUtils.loadTemplateRoot;
+import static freemarker.introspection.TemplateTestUtils.templateConfig;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -42,7 +43,7 @@ public class TemplateModificationTests {
 
         StringTemplateLoader tloader = new StringTemplateLoader();
         tloader.putTemplate(templateFile, templateText);
-        templateConfig = new Configuration();
+        templateConfig = templateConfig();
         templateConfig.setTemplateLoader(tloader);
         template = templateConfig.getTemplate(templateFile);
     }
@@ -56,7 +57,7 @@ public class TemplateModificationTests {
 
         List<Element> includes = ((NodeFinder) new NodeFinder(
                 TemplateIntrospector.getRootNode(template)).seek())
-                .getIncludeElements();
+                        .getIncludeElements();
         assertEquals(1, includes.size());
 
         String newTemplateText = new TemplateEditor(templateText)
@@ -103,8 +104,8 @@ public class TemplateModificationTests {
 
         List<VariableInfo> results = new VariableFinder(
                 TemplateIntrospector.getRootNode(template))
-                .seek()
-                .getVariableInfo();
+                        .seek()
+                        .getVariableInfo();
 
         TemplateEditor editor = new TemplateEditor(templateText);
         for (VariableInfo vi : results) {
@@ -130,8 +131,8 @@ public class TemplateModificationTests {
 
         List<VariableInfo> results = new VariableFinder(
                 TemplateIntrospector.getRootNode(template))
-                .seek()
-                .getVariableInfo();
+                        .seek()
+                        .getVariableInfo();
 
         TemplateEditor editor = new TemplateEditor(templateText);
         for (VariableInfo vi : results) {

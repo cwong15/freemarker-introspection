@@ -23,7 +23,7 @@ public class VariableDiscoveryTests {
 
     @Before
     public void setup() {
-        config = new Configuration();
+        config = TemplateTestUtils.templateConfig();
         config.setClassForTemplateLoading(this.getClass(), "");
     }
 

@@ -3,28 +3,20 @@ package freemarker.introspection;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 
 public class ComprehensiveTests {
-    private Template template;
-
-    @Before
-    public void setup() throws IOException {
-        Configuration config = new Configuration();
-        config.setClassForTemplateLoading(this.getClass(), "");
-        template = config.getTemplate("everything.ftl");
-    }
-
     /**
      * Tests that we can wrap all supported element and expression types. 
      * We check that each node can load its children and/or params without
@@ -33,9 +25,7 @@ public class ComprehensiveTests {
      */
     @Test
     public void testLoadEverything() {
-        Element root = TemplateIntrospector.getRootNode(template);
-        ComprehensiveVisitor visitor = new ComprehensiveVisitor();
-        root.accept(visitor);
+        ComprehensiveVisitor visitor = visitTemplate("everything.ftl");
 
         for (ElementType etype : testedElementTypes()) {
             Element element = visitor.elements.get(etype);
@@ -51,9 +41,42 @@ public class ComprehensiveTests {
         }
     }
 
+    /**
+     * Separate set of tests for autoescape directive. This cannot coexist with the 
+     * legacy escape directive in everything.ftl. 
+     */
+    @Test
+    public void testLoadAutoescape() throws Exception {
+        ComprehensiveVisitor visitor = visitTemplate("autoescaping.ftl");
+        List<ElementType> aaTypes = Arrays.asList(ElementType.AUTO_ESC_BLOCK,
+                ElementType.NO_AUTO_ESC_BLOCK);
+        for (ElementType etype : aaTypes) {
+            Element element = visitor.elements.get(etype);
+            assertNotNull("Missing element of type " + etype, element);
+            element.getParams();
+            element.getChildren();
+        }
+    }
+
+    private ComprehensiveVisitor visitTemplate(String path) {
+        Configuration config = TemplateTestUtils.templateConfig();
+        config.setClassForTemplateLoading(this.getClass(), "");
+        Template template = null;
+        try {
+            template = config.getTemplate(path);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to load Freemarker template", e);
+        }
+        Element root = TemplateIntrospector.getRootNode(template);
+        ComprehensiveVisitor visitor = new ComprehensiveVisitor();
+        root.accept(visitor);
+        return visitor;
+    }
+
     private Set<ElementType> testedElementTypes() {
         Set<ElementType> all = new HashSet<ElementType>(EnumSet.allOf(ElementType.class));
-        all.removeAll(EnumSet.of(ElementType.DEBUG_BREAK, ElementType.GENERIC,
+        all.removeAll(EnumSet.of(ElementType.AUTO_ESC_BLOCK, ElementType.DEBUG_BREAK,
+                ElementType.GENERIC, ElementType.NO_AUTO_ESC_BLOCK,
                 ElementType.TRIM_INSTRUCTION));
         return all;
     }
